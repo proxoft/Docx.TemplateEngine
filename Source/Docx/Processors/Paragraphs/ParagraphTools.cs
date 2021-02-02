@@ -84,6 +84,36 @@ namespace Proxoft.Docx.TemplateEngine.Processors
             return token.Position.TextIndex + replacementLength;
         }
 
+        public static void RemoveTextAndElementsBetween(
+            this ICollection<Paragraph> paragraphs,
+            TokenPosition from,
+            TokenPosition to)
+        {
+            if (from.ParagraphIndex == to.ParagraphIndex)
+            {
+                paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex, to.TextIndex);
+                return;
+            }
+
+            paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex);
+            paragraphs.ElementAt(to.ParagraphIndex).RemoveText(0, to.TextIndex);
+
+            var toSkip = from.ParagraphIndex;
+            if (!string.IsNullOrEmpty(paragraphs.ElementAt(from.ParagraphIndex).InnerText))
+            {
+                toSkip++;
+            }
+
+            OpenXmlElement e = paragraphs.Skip(toSkip).FirstOrDefault();
+            OpenXmlElement l = paragraphs.ElementAt(to.ParagraphIndex);
+            while(e != null && e != l)
+            {
+                var t = e;
+                e = e.NextSibling();
+                t.Remove();
+            }
+        }
+
         public static void RemoveTextBetween(
             this ICollection<Paragraph> paragraphs,
             TokenPosition from,

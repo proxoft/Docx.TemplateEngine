@@ -71,5 +71,25 @@ namespace Proxoft.Docx.TemplateEngine.Tests
 
             this.Process(nameof(WhenFalse_And_ContainsMultipleParagraphs), model);
         }
+
+        [Fact]
+        public void WhenTrue_And_ContainsTable()
+        {
+            var model = new ObjectModel("",
+                new ConditionModel("theCondition", true)
+            );
+
+            this.Process(nameof(WhenTrue_And_ContainsTable), model);
+        }
+
+        [Fact]
+        public void WhenFalse_And_ContainsTable()
+        {
+            var model = new ObjectModel("",
+                new ConditionModel("theCondition", false)
+            );
+
+            this.Process(nameof(WhenFalse_And_ContainsTable), model);
+        }
     }
 }
