@@ -143,7 +143,7 @@ namespace Proxoft.Docx.TemplateEngine.Processors
 
             if (!conditionModel.IsFullfilled(template.Start.ModelDescription.Parameters))
             {
-                bodyParagraphs.RemoveTextBetween(template.Start.Position, template.End.Position);
+                bodyParagraphs.RemoveTextAndElementsBetween(template.Start.Position, template.End.Position);
             }
 
             return (endParagraph, textEnd);

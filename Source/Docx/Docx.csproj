@@ -14,7 +14,7 @@
         <AssemblyName>Proxoft.Docx.TemplateEngine</AssemblyName>
         <RootNamespace>Proxoft.Docx.TemplateEngine</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 

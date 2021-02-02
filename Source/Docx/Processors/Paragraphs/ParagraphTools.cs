@@ -84,7 +84,7 @@ namespace Proxoft.Docx.TemplateEngine.Processors
             return token.Position.TextIndex + replacementLength;
         }
 
-        public static void RemoveTextBetween(
+        public static void RemoveTextAndElementsBetween(
             this ICollection<Paragraph> paragraphs,
             TokenPosition from,
             TokenPosition to)
@@ -99,17 +99,19 @@ namespace Proxoft.Docx.TemplateEngine.Processors
             paragraphs.ElementAt(to.ParagraphIndex).RemoveText(0, to.TextIndex);
 
             var toSkip = from.ParagraphIndex;
-            var take = to.ParagraphIndex - from.ParagraphIndex;
             if (!string.IsNullOrEmpty(paragraphs.ElementAt(from.ParagraphIndex).InnerText))
             {
                 toSkip++;
-                take--;
             }
 
-            paragraphs
-                .Skip(toSkip)
-                .Take(take)
-                .RemoveSelfFromParent();
+            OpenXmlElement e = paragraphs.Skip(toSkip).FirstOrDefault();
+            OpenXmlElement l = paragraphs.ElementAt(to.ParagraphIndex);
+            while(e != null && e != l)
+            {
+                var t = e;
+                e = e.NextSibling();
+                t.Remove();
+            }
         }
 
         private static (int startRun, int endRun) FindIndeces(this IEnumerable<Run> runs, int tokenStartTextIndex, int tokenLength)
