@@ -114,34 +114,6 @@ namespace Proxoft.Docx.TemplateEngine.Processors
             }
         }
 
-        public static void RemoveTextBetween(
-            this ICollection<Paragraph> paragraphs,
-            TokenPosition from,
-            TokenPosition to)
-        {
-            if (from.ParagraphIndex == to.ParagraphIndex)
-            {
-                paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex, to.TextIndex);
-                return;
-            }
-
-            paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex);
-            paragraphs.ElementAt(to.ParagraphIndex).RemoveText(0, to.TextIndex);
-
-            var toSkip = from.ParagraphIndex;
-            var take = to.ParagraphIndex - from.ParagraphIndex;
-            if (!string.IsNullOrEmpty(paragraphs.ElementAt(from.ParagraphIndex).InnerText))
-            {
-                toSkip++;
-                take--;
-            }
-
-            paragraphs
-                .Skip(toSkip)
-                .Take(take)
-                .RemoveSelfFromParent();
-        }
-
         private static (int startRun, int endRun) FindIndeces(this IEnumerable<Run> runs, int tokenStartTextIndex, int tokenLength)
         {
             var startIndex = -1;
