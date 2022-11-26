@@ -23,15 +23,15 @@ namespace Proxoft.Docx.TemplateEngine.Processors
 
         public void Process(OpenXmlCompositeElement parent, Model context)
         {
-            var paragraphs = parent
-                .ChildElements
-                .OfType<Paragraph>()
-                .ToArray();
-
             Template template;
             int startTextIndex = 0;
             do
             {
+                var paragraphs = parent
+                    .ChildElements
+                    .OfType<Paragraph>()
+                    .ToArray();
+
                 template = paragraphs.FindNextTemplate(startTextIndex, _engineConfig);
 
                 switch (template)

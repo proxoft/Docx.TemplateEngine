@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>10.0</LangVersion>
         <PackageId>Docx.TemplateEngine</PackageId>
-   
         <Authors>Proxoft</Authors>
         <Company>Proxoft</Company>
         <Product>Docx.TemplateEngine</Product>
@@ -14,7 +14,7 @@
         <AssemblyName>Proxoft.Docx.TemplateEngine</AssemblyName>
         <RootNamespace>Proxoft.Docx.TemplateEngine</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.0.2</Version>
+        <Version>0.0.3</Version>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
