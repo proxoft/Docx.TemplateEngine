@@ -1,0 +1,27 @@
+﻿<Project>
+    <PropertyGroup>
+        <TargetFrameworks>net5.0;net6.0;net7.0;net8.0;net9.0;</TargetFrameworks>
+        <AssemblyName>Proxoft.TemplateEngine.$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>Proxoft.TemplateEngine.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+        <PackageId>Proxoft.TemplateEngine.$(MSBuildProjectName)</PackageId>
+
+        <BaseOutputPath>..\..\_Output\$(MSBuildProjectName)\bin\</BaseOutputPath>
+        <!--<BaseIntermediateOutputPath>..\..\_Output\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>-->
+
+        <Nullable>enable</Nullable>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+        <Authors>Proxoft s.r.o.</Authors>
+        <Copyright>www.proxoft.sk</Copyright>
+        <Product>Proxoft Docx Template Engine</Product>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/proxoft/Docx.TemplateEngine</PackageProjectUrl>
+        <Description>Engine to create docx documents from templated docx documents. The templates are created using custom syntax placeholders directly in the text of the docx.</Description>
+        <RepositoryUrl>https://github.com/proxoft/Docx.TemplateEngine</RepositoryUrl>
+        <PackageTags>Docx; Templates</PackageTags>
+
+    </PropertyGroup>
+</Project>
