@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.Docx.TemplateEngine.Processors.Searching
 {

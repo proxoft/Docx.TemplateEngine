@@ -1,4 +1,5 @@
 ﻿using System;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.Docx.TemplateEngine.DataModel.Factories
 {

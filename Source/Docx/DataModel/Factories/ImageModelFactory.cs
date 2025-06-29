@@ -1,4 +1,6 @@
-﻿namespace Proxoft.Docx.TemplateEngine.DataModel.Factories
+﻿using Proxoft.TemplateEngine.Docx.DataModel;
+
+namespace Proxoft.Docx.TemplateEngine.DataModel.Factories
 {
     public static class ImageModelFactory
     {

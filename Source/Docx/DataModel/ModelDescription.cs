@@ -1,33 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Proxoft.Docx.TemplateEngine.DataModel
+namespace Proxoft.TemplateEngine.Docx.DataModel;
+
+[DebuggerDisplay("{Expression}")]
+internal class ModelDescription(
+    IEnumerable<string> segments,
+    string parameters,
+    string originalText)
 {
-    [DebuggerDisplay("{Expression}")]
-    internal class ModelDescription
+    public static readonly ModelDescription Empty = new([], string.Empty, string.Empty);
+
+    public ModelDescription(
+        IEnumerable<string> segments,
+        string originalText) : this(segments, string.Empty, originalText)
     {
-        public static readonly ModelDescription Empty = new ModelDescription(new string[0], string.Empty, string.Empty);
-
-        public ModelDescription(
-            IEnumerable<string> segments,
-            string originalText) : this(segments, string.Empty, originalText)
-        {
-        }
-
-        public ModelDescription(
-            IEnumerable<string> segments,
-            string parameters,
-            string originalText)
-        {
-            this.Parameters = parameters;
-            this.Expression = new ModelExpression(segments);
-            this.OriginalText = originalText;
-        }
-
-        public ModelExpression Expression { get; }
-
-        public string Parameters { get; }
-
-        public string OriginalText { get; }
     }
+
+    public ModelExpression Expression { get; } = new ModelExpression(segments);
+
+    public string Parameters { get; } = parameters;
+
+    public string OriginalText { get; } = originalText;
 }

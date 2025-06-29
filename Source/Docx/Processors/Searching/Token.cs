@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Proxoft.Docx.TemplateEngine.DataModel;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.Docx.TemplateEngine.Processors.Searching
 {

@@ -1,5 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
-using Proxoft.Docx.TemplateEngine.DataModel;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.Docx.TemplateEngine.Processors
 {

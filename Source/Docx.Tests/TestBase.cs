@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
-using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx.Tests;
 

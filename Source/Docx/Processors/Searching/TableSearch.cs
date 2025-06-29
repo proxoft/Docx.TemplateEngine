@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.TemplateEngine.Docx.Common;
 using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.Docx.TemplateEngine.Processors.Searching
 {

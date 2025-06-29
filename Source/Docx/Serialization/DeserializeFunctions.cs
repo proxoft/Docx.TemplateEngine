@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Proxoft.Docx.TemplateEngine.DataModel;
 using Newtonsoft.Json.Linq;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.Docx.TemplateEngine.Serialization
 {

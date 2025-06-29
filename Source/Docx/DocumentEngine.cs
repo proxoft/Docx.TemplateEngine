@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using DocumentFormat.OpenXml.Packaging;
-using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.Docx.TemplateEngine.Processors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx;
 

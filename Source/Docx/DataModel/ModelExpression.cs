@@ -2,31 +2,22 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace Proxoft.Docx.TemplateEngine.DataModel
+namespace Proxoft.TemplateEngine.Docx.DataModel;
+
+[DebuggerDisplay("{ToExpressionString()}")]
+internal class ModelExpression(IEnumerable<string> segments)
 {
-    [DebuggerDisplay("{ToExpressionString()}")]
-    internal class ModelExpression
-    {
-        private readonly string[] _segments;
+    private readonly string[] _segments = [.. segments];
 
-        public ModelExpression(IEnumerable<string> segments)
-        {
-            _segments = segments.ToArray();
-        }
+    public string Root => _segments.FirstOrDefault() ?? string.Empty;
 
-        public string Root => _segments.FirstOrDefault() ?? string.Empty;
-        public string Name => _segments.LastOrDefault() ?? string.Empty;
+    public string Name => _segments.LastOrDefault() ?? string.Empty;
 
-        public bool IsFinal => _segments.Length <= 1;
+    public bool IsFinal => _segments.Length <= 1;
 
-        public ModelExpression Child()
-        {
-            return new ModelExpression(_segments.Skip(1));
-        }
+    public ModelExpression Child() =>
+        new(_segments.Skip(1));
 
-        public string ToExpressionString(string nameSeparator = ".")
-        {
-            return string.Join(nameSeparator, _segments);
-        }
-    }
+    public string ToExpressionString(string nameSeparator = ".") =>
+        string.Join(nameSeparator, _segments);
 }

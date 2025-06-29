@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Proxoft.Docx.TemplateEngine.DataModel;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx.Tests;
 
