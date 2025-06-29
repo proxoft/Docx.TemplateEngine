@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Proxoft.Docx.TemplateEngine.DataModel;
+using Proxoft.TemplateEngine.Docx.Tests;
 using Xunit;
 
 namespace Proxoft.Docx.TemplateEngine.Tests

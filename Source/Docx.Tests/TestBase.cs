@@ -1,48 +1,48 @@
 ﻿using System.IO;
 using System.Text;
+using Proxoft.Docx.TemplateEngine;
 using Proxoft.Docx.TemplateEngine.DataModel;
 
-namespace Proxoft.Docx.TemplateEngine.Tests
+namespace Proxoft.TemplateEngine.Docx.Tests;
+
+public abstract class TestBase
 {
-    public abstract class TestBase
+    private readonly string _outputFolder;
+    protected readonly string SamplesFolder;
+
+    protected TestBase(
+        string samplesSubFolder,
+        string samplesRootFolder = "../../../../Samples",
+        string outputRootFolder = "../../../../TestOutputs")
     {
-        private readonly string _outputFolder;
-        protected readonly string SamplesFolder;
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        protected TestBase(
-            string samplesSubFolder,
-            string samplesRootFolder = "../../../../Samples",
-            string outputRootFolder = "../../../../TestOutputs")
+        SamplesFolder = $"{samplesRootFolder}/{samplesSubFolder}";
+        _outputFolder = $"{outputRootFolder}/{samplesSubFolder}";
+    }
+
+    protected void Process(string docxSampleFileName, Model model)
+        => this.Process(docxSampleFileName, model, EngineConfig.Default);
+
+    protected void Process(string docxSampleFileName, Model model, EngineConfig config)
+    {
+        if (!Directory.Exists(_outputFolder))
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            SamplesFolder = $"{samplesRootFolder}/{samplesSubFolder}";
-            _outputFolder = $"{outputRootFolder}/{samplesSubFolder}";
+            Directory.CreateDirectory(_outputFolder);
         }
 
-        protected void Process(string docxSampleFileName, Model model)
-            => this.Process(docxSampleFileName, model, EngineConfig.Default);
-
-        protected void Process(string docxSampleFileName, Model model, EngineConfig config)
+        var outputFileName = $"{_outputFolder}/{docxSampleFileName}.docx";
+        if (File.Exists(outputFileName))
         {
-            if (!Directory.Exists(_outputFolder))
-            {
-                Directory.CreateDirectory(_outputFolder);
-            }
-
-            var outputFileName = $"{_outputFolder}/{docxSampleFileName}.docx";
-            if (File.Exists(outputFileName))
-            {
-                File.Delete(outputFileName);
-            }
-
-            var inputFileName = $"{SamplesFolder}/{docxSampleFileName}.docx";
-            using var templateStream = File.Open(inputFileName, FileMode.Open, FileAccess.Read);
-
-            var engine = new DocumentEngine(config);
-            var docx = engine.Run(templateStream, model);
-
-            File.WriteAllBytes(outputFileName, docx);
+            File.Delete(outputFileName);
         }
+
+        var inputFileName = $"{SamplesFolder}/{docxSampleFileName}.docx";
+        using var templateStream = File.Open(inputFileName, FileMode.Open, FileAccess.Read);
+
+        var engine = new DocumentEngine(config);
+        var docx = engine.Run(templateStream, model);
+
+        File.WriteAllBytes(outputFileName, docx);
     }
 }

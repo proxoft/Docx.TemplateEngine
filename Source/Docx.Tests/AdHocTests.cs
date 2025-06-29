@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Proxoft.TemplateEngine.Docx.Tests;
 using Xunit;
 
 namespace Proxoft.Docx.TemplateEngine.Tests
