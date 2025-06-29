@@ -1,25 +1,22 @@
 ﻿using Proxoft.Docx.TemplateEngine.DataModel;
-using Proxoft.TemplateEngine.Docx.Tests;
-using Xunit;
 
-namespace Proxoft.Docx.TemplateEngine.Tests
+namespace Proxoft.TemplateEngine.Docx.Tests;
+
+public class HeadersFootersTests : TestBase
 {
-    public class HeadersFootersTests : TestBase
+    public HeadersFootersTests() : base("HeadersFooters")
     {
-        public HeadersFootersTests() : base("HeadersFooters")
-        {
-        }
+    }
 
-        [Fact]
-        public void SimpleHeader()
-        {
-            this.Process(nameof(SimpleHeader), new SimpleModel("xyz", "The real value of XYZ"));
-        }
+    [Fact]
+    public void SimpleHeader()
+    {
+        this.Process(nameof(SimpleHeader), new SimpleModel("xyz", "The real value of XYZ"));
+    }
 
-        [Fact]
-        public void SimpleFooter()
-        {
-            this.Process(nameof(SimpleFooter), new SimpleModel("xyz", "The real value of XYZ"));
-        }
+    [Fact]
+    public void SimpleFooter()
+    {
+        this.Process(nameof(SimpleFooter), new SimpleModel("xyz", "The real value of XYZ"));
     }
 }

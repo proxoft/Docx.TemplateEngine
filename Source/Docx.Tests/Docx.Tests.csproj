@@ -22,4 +22,7 @@
         <ProjectReference Include="..\Docx\Docx.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
 </Project>

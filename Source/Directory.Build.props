@@ -1,7 +1,7 @@
 ﻿<Project>
     <PropertyGroup>
         <TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
-        <LangVersion>10.0</LangVersion>
+        <LangVersion>12.0</LangVersion>
         <AssemblyName>Proxoft.TemplateEngine.$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>Proxoft.TemplateEngine.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
         <PackageId>Proxoft.TemplateEngine.$(MSBuildProjectName)</PackageId>
