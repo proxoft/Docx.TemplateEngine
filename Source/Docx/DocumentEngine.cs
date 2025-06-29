@@ -1,35 +1,26 @@
 ﻿using System.IO;
 using DocumentFormat.OpenXml.Packaging;
-using Proxoft.Docx.TemplateEngine.Processors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Proxoft.TemplateEngine.Docx.Configurations;
 using Proxoft.TemplateEngine.Docx.DataModel;
+using Proxoft.TemplateEngine.Docx.Processors;
 
 namespace Proxoft.TemplateEngine.Docx;
 
-public class DocumentEngine
+public class DocumentEngine(EngineConfig engineConfig)
 {
-    private EngineConfig _engineConfig;
+    private readonly EngineConfig _engineConfig = engineConfig;
 
     public DocumentEngine() : this(EngineConfig.Default)
     {
     }
 
-    public DocumentEngine(EngineConfig engineConfig)
-    {
-        _engineConfig = engineConfig;
-    }
-
     public ILogger Logger { get; set; } = NullLogger.Instance;
-
-    public byte[] Run(Stream docxTemplate, Model model)
-        => this.Run(docxTemplate, model, _engineConfig);
 
     public byte[] Run(Stream docxTemplate, Model model, EngineConfig engineConfig)
     {
-        var processor = new DocumentProcessor(engineConfig);
-        processor.Logger = this.Logger ?? NullLogger.Instance;
+        DocumentProcessor processor = new(engineConfig, this.Logger);
 
         using var ms = new MemoryStream();
         docxTemplate.CopyTo(ms);
@@ -41,6 +32,9 @@ public class DocumentEngine
 
         return ms.ToArray();
     }
+
+    public byte[] Run(Stream docxTemplate, Model model)
+        => this.Run(docxTemplate, model, _engineConfig);
 
     public byte[] Run(byte[] docxTemplate, Model model)
         => this.Run(docxTemplate, model, EngineConfig.Default);

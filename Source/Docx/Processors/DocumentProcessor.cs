@@ -2,37 +2,32 @@
 using Microsoft.Extensions.Logging;
 using Proxoft.TemplateEngine.Docx.Configurations;
 using Proxoft.TemplateEngine.Docx.DataModel;
+using Proxoft.TemplateEngine.Docx.Processors.Images;
 
-namespace Proxoft.Docx.TemplateEngine.Processors
+namespace Proxoft.TemplateEngine.Docx.Processors;
+
+internal class DocumentProcessor(EngineConfig engineConfig, ILogger logger)
 {
-    internal class DocumentProcessor
-    {
-        private readonly EngineConfig _engineConfig;
+    private readonly EngineConfig _engineConfig = engineConfig;
 
-        public DocumentProcessor(EngineConfig engineConfig)
+    public ILogger Logger { get; } = logger;
+
+    public void Process(WordprocessingDocument document, Model documentModel)
+    {
+        var mainPart = document.MainDocumentPart;
+        var imageProcessor = new ImageProcessor(mainPart, this.Logger);
+        var compositeElementProcessor = new CompositeElementProcessor(_engineConfig, imageProcessor, this.Logger);
+
+        compositeElementProcessor.Process(mainPart.Document.Body, documentModel);
+
+        foreach (var hp in mainPart.HeaderParts)
         {
-            _engineConfig = engineConfig;
+            compositeElementProcessor.Process(hp.Header, documentModel);
         }
 
-        public ILogger Logger { get; set; }
-
-        public void Process(WordprocessingDocument document, Model documentModel)
+        foreach (var fp in mainPart.FooterParts)
         {
-            var mainPart = document.MainDocumentPart;
-            var imageProcessor = new ImageProcessor(mainPart, this.Logger);
-            var compositeElementProcessor = new CompositeElementProcessor(_engineConfig, imageProcessor, this.Logger);
-
-            compositeElementProcessor.Process(mainPart.Document.Body, documentModel);
-
-            foreach (var hp in mainPart.HeaderParts)
-            {
-                compositeElementProcessor.Process(hp.Header, documentModel);
-            }
-
-            foreach (var fp in mainPart.FooterParts)
-            {
-                compositeElementProcessor.Process(fp.Footer, documentModel);
-            }
+            compositeElementProcessor.Process(fp.Footer, documentModel);
         }
     }
 }
