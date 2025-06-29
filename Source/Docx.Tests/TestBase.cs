@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
-using Proxoft.Docx.TemplateEngine;
 using Proxoft.Docx.TemplateEngine.DataModel;
+using Proxoft.TemplateEngine.Docx.Configurations;
 
 namespace Proxoft.TemplateEngine.Docx.Tests;
 
@@ -12,7 +12,7 @@ public abstract class TestBase
 
     protected TestBase(
         string samplesSubFolder,
-        string samplesRootFolder = "../../../../Samples",
+        string samplesRootFolder = "../../../../../Source/Samples",
         string outputRootFolder = "../../../../TestOutputs")
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

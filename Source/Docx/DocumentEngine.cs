@@ -4,7 +4,7 @@ using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.Docx.TemplateEngine.Processors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Proxoft.Docx.TemplateEngine;
+using Proxoft.TemplateEngine.Docx.Configurations;
 
 namespace Proxoft.TemplateEngine.Docx;
 
@@ -31,17 +31,15 @@ public class DocumentEngine
         var processor = new DocumentProcessor(engineConfig);
         processor.Logger = this.Logger ?? NullLogger.Instance;
 
-        using (var ms = new MemoryStream())
+        using var ms = new MemoryStream();
+        docxTemplate.CopyTo(ms);
+
+        using (var docx = WordprocessingDocument.Open(ms, true))
         {
-            docxTemplate.CopyTo(ms);
-
-            using (var docx = WordprocessingDocument.Open(ms, true))
-            {
-                processor.Process(docx, model);
-            }
-
-            return ms.ToArray();
+            processor.Process(docx, model);
         }
+
+        return ms.ToArray();
     }
 
     public byte[] Run(byte[] docxTemplate, Model model)

@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.Docx.TemplateEngine.Processors.Searching;
 using Microsoft.Extensions.Logging;
+using Proxoft.TemplateEngine.Docx.Configurations;
 
 namespace Proxoft.Docx.TemplateEngine.Processors
 {

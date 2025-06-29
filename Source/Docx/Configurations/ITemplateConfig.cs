@@ -1,8 +1,7 @@
-﻿namespace Proxoft.Docx.TemplateEngine
+﻿namespace Proxoft.TemplateEngine.Docx.Configurations;
+
+internal interface ITemplateConfig
 {
-    internal interface ITemplateConfig
-    {
-        string OpenSuffix { get; }
-        string ClosePrefix { get; }
-    }
+    string OpenSuffix { get; }
+    string ClosePrefix { get; }
 }

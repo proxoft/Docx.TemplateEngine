@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Proxoft.TemplateEngine.Docx.Configurations;
 
 namespace Proxoft.Docx.TemplateEngine.Processors.Searching
 {

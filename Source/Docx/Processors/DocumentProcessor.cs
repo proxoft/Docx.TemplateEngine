@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using Proxoft.Docx.TemplateEngine.DataModel;
 using Microsoft.Extensions.Logging;
+using Proxoft.TemplateEngine.Docx.Configurations;
 
 namespace Proxoft.Docx.TemplateEngine.Processors
 {

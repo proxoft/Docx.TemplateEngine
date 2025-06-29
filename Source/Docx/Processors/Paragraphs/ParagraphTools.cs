@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Proxoft.Docx.TemplateEngine.DataModel;
 using Proxoft.Docx.TemplateEngine.Processors.Searching;
+using Proxoft.TemplateEngine.Docx.Common;
 
 namespace Proxoft.Docx.TemplateEngine.Processors
 {
