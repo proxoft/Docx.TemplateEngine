@@ -18,17 +18,17 @@ public class JsonTests
             new ConditionModel("conditionFalse", () => false),
             new CollectionModel(
                 "collection",
-                new Model[] {
+                [
                     new SimpleModel("$c", "1"),
                     new SimpleModel("$c", "2"),
                     new SimpleModel("$c", "3"),
-                },
-                new Model[0]
+                ],
+                []
             ),
-            new ImageModel("image", "image.png", new byte[] {1 ,2, 3, 4})
+            new ImageModel("image", "image.png", [1 ,2, 3, 4])
         );
 
-        var json = Proxoft.Docx.TemplateEngine.Serialization.Serializer.Serialize(root);
+        string json = Serialization.Serializer.Serialize(root);
 
         Assert.Equal(
             JSON,
@@ -43,7 +43,8 @@ public class JsonTests
             new SimpleModel("simple", "1")
         );
 
-        var json = Proxoft.Docx.TemplateEngine.Serialization.Serializer.Serialize(root);
+
+        string json = Serialization.Serializer.Serialize(root);
 
         Assert.Equal(
             NONAME_JSON,
@@ -53,7 +54,7 @@ public class JsonTests
     [Fact]
     public void Deserialize()
     {
-        var root = Proxoft.Docx.TemplateEngine.Serialization.Serializer.Deserialize(JSON) as ObjectModel;
+        ObjectModel? root = Serialization.Serializer.Deserialize(JSON) as ObjectModel;
         Assert.NotNull(root);
     }
 }
