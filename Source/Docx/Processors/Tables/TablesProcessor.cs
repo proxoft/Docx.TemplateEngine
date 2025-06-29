@@ -2,12 +2,12 @@
 using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Proxoft.Docx.TemplateEngine.Processors.Searching;
 using Microsoft.Extensions.Logging;
 using Proxoft.TemplateEngine.Docx.Common;
 using Proxoft.TemplateEngine.Docx.Configurations;
 using Proxoft.TemplateEngine.Docx.DataModel;
 using Proxoft.TemplateEngine.Docx.Processors.Images;
+using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Tables;
 

@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Proxoft.TemplateEngine.Docx.Configurations;
 using Proxoft.TemplateEngine.Docx.DataModel;
+using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.Docx.TemplateEngine.Processors.Searching
 {

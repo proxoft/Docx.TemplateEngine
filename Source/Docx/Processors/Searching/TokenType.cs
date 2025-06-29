@@ -1,13 +1,12 @@
-﻿namespace Proxoft.Docx.TemplateEngine.Processors.Searching
+﻿namespace Proxoft.TemplateEngine.Docx.Processors.Searching;
+
+internal enum TokenType
 {
-    internal enum TokenType
-    {
-        None,
-        SingleValue,
-        CollectionBegin,
-        CollectionEnd,
-        ConditionBegin,
-        ConditionEnd,
-        Unknown
-    }
+    None,
+    SingleValue,
+    CollectionBegin,
+    CollectionEnd,
+    ConditionBegin,
+    ConditionEnd,
+    Unknown
 }
