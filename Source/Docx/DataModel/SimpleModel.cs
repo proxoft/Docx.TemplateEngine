@@ -27,3 +27,26 @@ public class SimpleModel(string name, Func<string> formattedValueFunc) : Model(n
         return this.Parent.Find(expression);
     }
 }
+
+public static class SimpleModelFactory
+{
+    public static SimpleModel ToSimpleModel(this int value, string name, string format = "")
+    {
+        return new SimpleModel(name, value.ToString(format));
+    }
+
+    public static SimpleModel ToSimpleModel(this string value, string name)
+    {
+        return new SimpleModel(name, value);
+    }
+
+    public static SimpleModel ToSimpleModel(this DateTime value, string name, string format = "")
+    {
+        return new SimpleModel(name, value.ToString(format));
+    }
+
+    public static SimpleModel ToSimpleModel(this decimal value, string name, string format = "")
+    {
+        return new SimpleModel(name, value.ToString(format));
+    }
+}
