@@ -1,57 +1,56 @@
 ﻿using System;
 
-namespace Proxoft.Docx.TemplateEngine.DataModel
+namespace Proxoft.TemplateEngine.Docx.DataModel;
+
+public class ImageModel(
+    string name,
+    string imageName,
+    byte[] data) : Model(name)
 {
-    public class ImageModel : Model
+    public ImageModel(
+        string name,
+        string imageName,
+        string base64) : this(name, imageName, ImageSourceToByteArray(base64))
     {
-        public ImageModel(
-            string name,
-            string imageName,
-            byte[] data) : base(name)
+    }
+
+    public string ImageName { get; } = imageName;
+
+    public byte[] Data { get; } = data;
+
+    public override string FormattedValue()
+    {
+        return Convert.ToBase64String(this.Data);
+    }
+
+    internal override Model Find(ModelExpression expression)
+    {
+        if (expression.IsFinal && expression.Name == this.Name)
         {
-            this.ImageName = imageName;
-            this.Data = data;
+            return this;
         }
 
-        public ImageModel(
-            string name,
-            string imageName,
-            string base64) : base(name)
+        return this.Parent.Find(expression);
+    }
+
+    private static byte[] ImageSourceToByteArray(string imageData)
+    {
+        if (string.IsNullOrWhiteSpace(imageData))
         {
-            this.ImageName = imageName;
-            this.Data = ImageSourceToByteArray(base64);
+            return [];
         }
 
-        public string ImageName { get; }
+        var i = imageData.IndexOf(",", StringComparison.InvariantCultureIgnoreCase);
+        var base64 = imageData[(i + 1)..];
+        var imageByteData = Convert.FromBase64String(base64);
+        return imageByteData;
+    }
+}
 
-        public byte[] Data { get; }
-
-        public override string FormattedValue()
-        {
-            return Convert.ToBase64String(this.Data);
-        }
-
-        internal override Model Find(ModelExpression expression)
-        {
-            if (expression.IsFinal && expression.Name == this.Name)
-            {
-                return this;
-            }
-
-            return this.Parent.Find(expression);
-        }
-
-        private static byte[] ImageSourceToByteArray(string imageData)
-        {
-            if (string.IsNullOrWhiteSpace(imageData))
-            {
-                return Array.Empty<byte>();
-            }
-
-            var i = imageData.IndexOf(",", StringComparison.InvariantCultureIgnoreCase);
-            var base64 = imageData.Substring(i + 1);
-            var imageByteData = Convert.FromBase64String(base64);
-            return imageByteData;
-        }
+public static class ImageModelFactory
+{
+    public static ImageModel ToImageModel(this byte[] data, string name, string imageName)
+    {
+        return new ImageModel(name, imageName, data);
     }
 }

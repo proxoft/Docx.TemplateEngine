@@ -1,16 +1,15 @@
-﻿namespace Proxoft.Docx.TemplateEngine.Processors.Searching
+﻿namespace Proxoft.TemplateEngine.Docx.Processors.Searching;
+
+internal class ConditionTemplate : Template
 {
-    internal class ConditionTemplate : Template
+    public ConditionTemplate(Token start, Token end)
     {
-        public ConditionTemplate(Token start, Token end)
-        {
-            this.Start = start;
-            this.End = end;
-        }
-
-        public override bool IsComplete => this.Start != Token.None && this.End != Token.None;
-
-        public Token Start { get; }
-        public Token End { get; }
+        this.Start = start;
+        this.End = end;
     }
+
+    public override bool IsComplete => this.Start != Token.None && this.End != Token.None;
+
+    public Token Start { get; }
+    public Token End { get; }
 }

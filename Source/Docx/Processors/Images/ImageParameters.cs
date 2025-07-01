@@ -1,63 +1,62 @@
 ﻿using System;
 
-namespace Proxoft.Docx.TemplateEngine.Processors.Images
+namespace Proxoft.TemplateEngine.Docx.Processors.Images;
+
+internal class ImageParameters
 {
-    internal class ImageParameters
+    private const string parameterSeparator = ";";
+
+    private readonly long? _maxWidth;
+    private readonly long? _maxHeight;
+
+    private ImageParameters(long? maxWidth, long? maxHeight)
     {
-        private const string parameterSeparator = ";";
+        _maxWidth = maxWidth;
+        _maxHeight = maxHeight;
+    }
 
-        private readonly long? _maxWidth;
-        private readonly long? _maxHeight;
+    public (long width, long height) Scale(long imageWidth, long imageHeight)
+    {
+        var factor = this.CalculateFactor(imageWidth, imageHeight);
+        var iw = (long)Math.Round(factor * imageWidth);
+        var ih = (long)Math.Round(factor * imageHeight);
+        return (iw, ih);
+    }
 
-        private ImageParameters(long? maxWidth, long? maxHeight)
+    public static ImageParameters FromString(string parameters)
+    {
+        if (string.IsNullOrWhiteSpace(parameters))
         {
-            _maxWidth = maxWidth;
-            _maxHeight = maxHeight;
+            return new ImageParameters(null, null);
         }
 
-        public (long width, long height) Scale(long imageWidth, long imageHeight)
+        string[] parts = parameters.Split(parameterSeparator);
+        long? maxWidth = parts.WidthInEmu();
+        long? maxHeight = parts.HeightInEmu();
+        return new ImageParameters(maxWidth, maxHeight);
+    }
+
+    private double CalculateFactor(long imageWidth, long imageHeight)
+    {
+        if (_maxWidth == null && _maxHeight == null)
         {
-            var factor = this.CalculateFactor(imageWidth, imageHeight);
-            var iw = (long)Math.Round(factor * imageWidth);
-            var ih = (long)Math.Round(factor * imageHeight);
-            return (iw, ih);
+            return 1;
         }
 
-        public static ImageParameters FromString(string parameters)
-        {
-            if (string.IsNullOrWhiteSpace(parameters))
-            {
-                return new ImageParameters(null, null);
-            }
+        var wf = CalculateFactor(_maxWidth, imageWidth);
+        var hf = CalculateFactor(_maxHeight, imageHeight);
+        return Math.Min(wf, hf);
+    }
 
-            var parts = parameters.Split(parameterSeparator);
-            var maxWidth = parts.WidthInEmu();
-            var maxHeight = parts.HeightInEmu();
-            return new ImageParameters(maxWidth, maxHeight);
-        }
+    private static double CalculateFactor(long? maximum, long current)
+    {
+        return maximum == null || maximum > current
+            ? 1d
+            : 1d * maximum.Value / current;
+    }
 
-        private double CalculateFactor(long imageWidth, long imageHeight)
-        {
-            if (_maxWidth == null && _maxHeight == null)
-            {
-                return 1;
-            }
-
-            var wf = this.CalculateFactor(_maxWidth, imageWidth);
-            var hf = this.CalculateFactor(_maxHeight, imageHeight);
-            return Math.Min(wf, hf);
-        }
-
-        private double CalculateFactor(long? maximum, long current)
-        {
-            return maximum == null || maximum > current
-                ? 1d
-                : 1d * maximum.Value / current;
-        }
-
-        public override string ToString()
-        {
-            return $"{_maxWidth}x{_maxHeight}";
-        }
+    public override string ToString()
+    {
+        return $"{_maxWidth}x{_maxHeight}";
     }
 }

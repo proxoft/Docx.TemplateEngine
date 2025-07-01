@@ -1,9 +1,8 @@
-﻿namespace Proxoft.Docx.TemplateEngine.Serialization
+﻿namespace Proxoft.TemplateEngine.Docx.Serialization;
+
+internal enum NameSerialization
 {
-    internal enum NameSerialization
-    {
-        None,
-        AsParent,
-        AsProperty
-    }
+    None,
+    AsParent,
+    AsProperty
 }

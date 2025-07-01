@@ -1,66 +1,57 @@
 ﻿using System.Diagnostics;
 
-namespace Proxoft.Docx.TemplateEngine.DataModel
+namespace Proxoft.TemplateEngine.Docx.DataModel;
+
+[DebuggerDisplay("{Name}")]
+public abstract class Model(string name)
 {
-    [DebuggerDisplay("{Name}")]
-    public abstract class Model
+    public static readonly Model Empty = new EmptyModel();
+    public static readonly Model Exception = new ExceptionModel();
+
+    protected Model Parent { get; private set; } = Empty;
+
+    public string Name { get; set; } = name;
+
+    public abstract string FormattedValue();
+
+    internal abstract Model Find(ModelExpression expression);
+
+    internal void SetParent(Model context)
     {
-        public static readonly Model Empty = new EmptyModel();
-        public static readonly Model Exception = new ExceptionModel();
+        this.Parent = context;
+    }
 
-        protected Model(string name)
+    private class EmptyModel : Model
+    {
+        public EmptyModel() : base(string.Empty)
         {
-            this.Name = name;
-            this.Parent = Empty;
         }
 
-        protected Model Parent { get; private set; }
-
-        public bool IsRoot => this.Parent == null;
-
-        public string Name { get; }
-
-        public abstract string FormattedValue();
-
-        internal abstract Model Find(ModelExpression expression);
-
-        internal void SetParent(Model context)
+        public override string FormattedValue()
         {
-            this.Parent = context;
+            return string.Empty;
         }
 
-        private class EmptyModel : Model
+        internal override Model Find(ModelExpression expression)
         {
-            public EmptyModel() : base(string.Empty)
-            {
-            }
+            return this;
+        }
+    }
 
-            public override string FormattedValue()
-            {
-                return string.Empty;
-            }
-
-            internal override Model Find(ModelExpression expression)
-            {
-                return this;
-            }
+    private class ExceptionModel : Model
+    {
+        public ExceptionModel() : base(string.Empty)
+        {
         }
 
-        private class ExceptionModel : Model
+        public override string FormattedValue()
         {
-            public ExceptionModel() : base(string.Empty)
-            {
-            }
+            throw new System.Exception("Exception model");
+        }
 
-            public override string FormattedValue()
-            {
-                throw new System.Exception("Exception model");
-            }
-
-            internal override Model Find(ModelExpression expression)
-            {
-                throw new System.Exception("Exception model");
-            }
+        internal override Model Find(ModelExpression expression)
+        {
+            throw new System.Exception("Exception model");
         }
     }
 }

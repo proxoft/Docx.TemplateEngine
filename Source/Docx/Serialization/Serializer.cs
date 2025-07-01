@@ -1,26 +1,48 @@
-﻿using System.Linq;
-using Proxoft.Docx.TemplateEngine.DataModel;
+﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
 
-using Newtonsoft.Json.Linq;
+// using Newtonsoft.Json.Linq;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
-namespace Proxoft.Docx.TemplateEngine.Serialization
+namespace Proxoft.TemplateEngine.Docx.Serialization;
+
+public static class Serializer
 {
-    public static class Serializer
+    private static readonly System.Text.Json.JsonSerializerOptions _jsonSerializerOptions = new()
     {
-        public static string Serialize(Model root)
-        {
-            var json = root.ToJson(NameSerialization.AsProperty);
-            return json;
-        }
+        WriteIndented = true,
+        TypeInfoResolver = new PolymorphicTypeResolver(),
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+    };
 
-        public static Model Deserialize(string json)
-        {
-            var jObject = JObject.Parse(json);
+    static Serializer()
+    {
+        // Register custom converters
+        _jsonSerializerOptions.Converters.Add(new Converters.ObjectModelJsonConverter());
+        _jsonSerializerOptions.Converters.Add(new Converters.SimpleModelJsonConverter());
+        _jsonSerializerOptions.Converters.Add(new Converters.ConditionModelJsonConverter());
+        _jsonSerializerOptions.Converters.Add(new Converters.CollectionModelJsonConverter());
+        _jsonSerializerOptions.Converters.Add(new Converters.ImageModelJsonConverter());
+    }
 
-            var name = jObject.Children<JProperty>().SingleOrDefault(p => p.Name == Constants.RootNameProperty);
-            var model = jObject.ToModel(name.Value.ToString());
+    public static string Serialize(Model root)
+    {
+        string json = System.Text.Json.JsonSerializer.Serialize(root, _jsonSerializerOptions);
+        return json;
+    }
 
-            return model;
-        }
+    public static Model? Deserialize(string json)
+    {
+        throw new NotImplementedException("Deserialization is not implemented yet.");
+        //var jObject = JObject.Parse(json);
+
+        //var name = jObject.Children<JProperty>().SingleOrDefault(p => p.Name == Constants.RootNameProperty);
+        //var model = jObject.ToModel(name.Value.ToString());
+
+        //return model;
     }
 }

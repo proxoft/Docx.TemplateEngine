@@ -1,17 +1,13 @@
-﻿using System.IO;
-using Xunit;
+﻿namespace Proxoft.TemplateEngine.Docx.Tests;
 
-namespace Proxoft.Docx.TemplateEngine.Tests
+public class AdHocTests : TestBase
 {
-    public class AdHocTests : TestBase
+    public AdHocTests() : base("AdHoc")
     {
-        public AdHocTests() : base("AdHoc")
-        {
-        }
+    }
 
-        [Fact]
-        public void Test()
-        {
-        }
+    [Fact]
+    public void Test()
+    {
     }
 }

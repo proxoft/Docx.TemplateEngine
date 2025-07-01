@@ -1,23 +1,22 @@
-﻿using Proxoft.Docx.TemplateEngine.DataModel;
-using Xunit;
+﻿using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
-namespace Proxoft.Docx.TemplateEngine.Tests
+namespace Proxoft.TemplateEngine.Docx.Tests;
+
+public class EngineConfigTests : TestBase
 {
-    public class EngineConfigTests : TestBase
+    public EngineConfigTests() : base("EngineConfig")
     {
-        public EngineConfigTests() : base("EngineConfig")
-        {
-        }
+    }
 
-        [Fact]
-        public void DoubleQuote()
-        {
-            var config = new EngineConfig(
-                new PlaceholderConfig("{{", "}}", ".", ":"),
-                ArrayConfig.Default,
-                ConditionConfig.Default);
+    [Fact]
+    public void DoubleQuote()
+    {
+        var config = new EngineConfig(
+            new PlaceholderConfig("{{", "}}", ".", ":"),
+            ArrayConfig.Default,
+            ConditionConfig.Default);
 
-            this.Process(nameof(DoubleQuote), new SimpleModel("xyz", "The real value of XYZ"), config);
-        }
+        this.Process(nameof(DoubleQuote), new SimpleModel("xyz", "The real value of XYZ"), config);
     }
 }

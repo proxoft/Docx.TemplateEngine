@@ -1,35 +1,52 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Proxoft.Docx.TemplateEngine.DataModel
+namespace Proxoft.TemplateEngine.Docx.DataModel;
+
+[DebuggerDisplay("{Name}: {FormattedValue()}")]
+public class SimpleModel(string name, Func<string> formattedValueFunc) : Model(name)
 {
-    [DebuggerDisplay("{Name}: {FormattedValue()}")]
-    public class SimpleModel : Model
+    private readonly Func<string> _formattedValueFunc = formattedValueFunc;
+
+    public SimpleModel(string name, string formattedValue) : this(name, () => formattedValue)
     {
-        private readonly Func<string> _formattedValueFunc;
+    }
 
-        public SimpleModel(string name, string formattedValue) : this(name, () => formattedValue)
+    public override string FormattedValue()
+    {
+        return _formattedValueFunc();
+    }
+
+    internal override Model Find(ModelExpression expression)
+    {
+        if(expression.IsFinal && expression.Name == this.Name)
         {
+            return this;
         }
 
-        public SimpleModel(string name, Func<string> formattedValueFunc) : base(name)
-        {
-            _formattedValueFunc = formattedValueFunc;
-        }
+        return this.Parent.Find(expression);
+    }
+}
 
-        public override string FormattedValue()
-        {
-            return _formattedValueFunc();
-        }
+public static class SimpleModelFactory
+{
+    public static SimpleModel ToSimpleModel(this int value, string name, string format = "")
+    {
+        return new SimpleModel(name, value.ToString(format));
+    }
 
-        internal override Model Find(ModelExpression expression)
-        {
-            if(expression.IsFinal && expression.Name == this.Name)
-            {
-                return this;
-            }
+    public static SimpleModel ToSimpleModel(this string value, string name)
+    {
+        return new SimpleModel(name, value);
+    }
 
-            return this.Parent.Find(expression);
-        }
+    public static SimpleModel ToSimpleModel(this DateTime value, string name, string format = "")
+    {
+        return new SimpleModel(name, value.ToString(format));
+    }
+
+    public static SimpleModel ToSimpleModel(this decimal value, string name, string format = "")
+    {
+        return new SimpleModel(name, value.ToString(format));
     }
 }

@@ -1,74 +1,72 @@
 ﻿using System.IO;
-using Proxoft.Docx.TemplateEngine.DataModel;
-using Xunit;
+using Proxoft.TemplateEngine.Docx.DataModel;
 
-namespace Proxoft.Docx.TemplateEngine.Tests
+namespace Proxoft.TemplateEngine.Docx.Tests;
+
+public class ImagesTests : TestBase
 {
-    public class ImagesTests : TestBase
+    public ImagesTests() : base("Images")
     {
-        public ImagesTests() : base("Images")
-        {
-        }
+    }
 
-        [Fact]
-        public void Image()
-        {
-            var model = this.LoadFromFile("image", "sample.jpeg");
+    [Fact]
+    public void Image()
+    {
+        var model = this.LoadFromFile("image", "sample.jpeg");
 
-            this.Process(nameof(Image), model);
-        }
+        this.Process(nameof(Image), model);
+    }
 
-        [Fact]
-        public void ImageInTheMiddleOfRun()
-        {
-            var model = this.LoadFromFile("image", "sample.jpeg");
+    [Fact]
+    public void ImageInTheMiddleOfRun()
+    {
+        var model = this.LoadFromFile("image", "sample.jpeg");
 
-            this.Process(nameof(ImageInTheMiddleOfRun), model);
-        }
+        this.Process(nameof(ImageInTheMiddleOfRun), model);
+    }
 
-        [Fact]
-        public void ImageSizeParameters()
-        {
-            var model = this.LoadFromFile("image", "sample.jpeg");
+    [Fact]
+    public void ImageSizeParameters()
+    {
+        var model = this.LoadFromFile("image", "sample.jpeg");
 
-            this.Process(nameof(ImageSizeParameters), model);
-        }
+        this.Process(nameof(ImageSizeParameters), model);
+    }
 
-        [Fact]
-        public void ImageSizeParametersWidth()
-        {
-            var model = this.LoadFromFile("image", "sample.jpeg");
+    [Fact]
+    public void ImageSizeParametersWidth()
+    {
+        var model = this.LoadFromFile("image", "sample.jpeg");
 
-            this.Process(nameof(ImageSizeParametersWidth), model);
-        }
+        this.Process(nameof(ImageSizeParametersWidth), model);
+    }
 
-        [Fact]
-        public void ImageSizeParametersHeight()
-        {
-            var model = this.LoadFromFile("image", "sample.jpeg");
+    [Fact]
+    public void ImageSizeParametersHeight()
+    {
+        var model = this.LoadFromFile("image", "sample.jpeg");
 
-            this.Process(nameof(ImageSizeParametersHeight), model);
-        }
+        this.Process(nameof(ImageSizeParametersHeight), model);
+    }
 
-        [Fact]
-        public void ImageSizeParametersInch()
-        {
-            var model = this.LoadFromFile("image", "sample.jpeg");
+    [Fact]
+    public void ImageSizeParametersInch()
+    {
+        var model = this.LoadFromFile("image", "sample.jpeg");
 
-            this.Process(nameof(ImageSizeParametersInch), model);
-        }
+        this.Process(nameof(ImageSizeParametersInch), model);
+    }
 
-        [Fact]
-        public void EmptyImage()
-        {
-            var model = new ImageModel("image", "empty.jpeg", new byte[0]);
-            this.Process(nameof(EmptyImage), model);
-        }
+    [Fact]
+    public void EmptyImage()
+    {
+        var model = new ImageModel("image", "empty.jpeg", []);
+        this.Process(nameof(EmptyImage), model);
+    }
 
-        private ImageModel LoadFromFile(string modelName, string imageName)
-        {
-            var data = File.ReadAllBytes(SamplesFolder + "/" + imageName);
-            return new ImageModel(modelName, imageName, data);
-        }
+    private ImageModel LoadFromFile(string modelName, string imageName)
+    {
+        var data = File.ReadAllBytes(SamplesFolder + "/" + imageName);
+        return new ImageModel(modelName, imageName, data);
     }
 }

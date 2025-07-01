@@ -1,24 +1,21 @@
 ﻿using DocumentFormat.OpenXml;
-using Proxoft.Docx.TemplateEngine.DataModel;
 using Microsoft.Extensions.Logging;
+using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
+using Proxoft.TemplateEngine.Docx.Processors.Images;
+using Proxoft.TemplateEngine.Docx.Processors.Paragraphs;
+using Proxoft.TemplateEngine.Docx.Processors.Tables;
 
-namespace Proxoft.Docx.TemplateEngine.Processors
+namespace Proxoft.TemplateEngine.Docx.Processors;
+
+internal class CompositeElementProcessor(EngineConfig engineConfig, IImageProcessor imageProcessor, ILogger logger)
 {
-    internal class CompositeElementProcessor
+    private ParagraphsProcessor _paragraphsProcessor = new ParagraphsProcessor(engineConfig, imageProcessor, logger);
+    private TablesProcessor _tablesProcessor = new TablesProcessor(engineConfig, imageProcessor, logger);
+
+    public void Process(OpenXmlCompositeElement compositeElement, Model context)
     {
-        private ParagraphsProcessor _paragraphsProcessor;
-        private TablesProcessor _tablesProcessor;
-
-        public CompositeElementProcessor(EngineConfig engineConfig, IImageProcessor imageProcessor, ILogger logger)
-        {
-            _paragraphsProcessor = new ParagraphsProcessor(engineConfig, imageProcessor, logger);
-            _tablesProcessor = new TablesProcessor(engineConfig, imageProcessor, logger);
-        }
-
-        public void Process(OpenXmlCompositeElement compositeElement, Model context)
-        {
-            _paragraphsProcessor.Process(compositeElement, context);
-            _tablesProcessor.Process(compositeElement, context);
-        }
+        _paragraphsProcessor.Process(compositeElement, context);
+        _tablesProcessor.Process(compositeElement, context);
     }
 }

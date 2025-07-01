@@ -1,14 +1,8 @@
-﻿namespace Proxoft.Docx.TemplateEngine.Processors.Searching
+﻿namespace Proxoft.TemplateEngine.Docx.Processors.Searching;
+
+internal class SingleValueTemplate(Token token) : Template
 {
-    internal class SingleValueTemplate : Template
-    {
-        public SingleValueTemplate(Token token)
-        {
-            this.Token = token;
-        }
+    public override bool IsComplete => true;
 
-        public override bool IsComplete => true;
-
-        public Token Token { get; }
-    }
+    public Token Token { get; } = token;
 }
