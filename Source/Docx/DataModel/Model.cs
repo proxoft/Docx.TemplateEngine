@@ -10,9 +10,7 @@ public abstract class Model(string name)
 
     protected Model Parent { get; private set; } = Empty;
 
-    public bool IsRoot => this.Parent == null;
-
-    public string Name { get; } = name;
+    public string Name { get; set; } = name;
 
     public abstract string FormattedValue();
 
