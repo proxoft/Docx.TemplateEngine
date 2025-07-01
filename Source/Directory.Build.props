@@ -24,5 +24,6 @@
         <RepositoryUrl>https://github.com/proxoft/Docx.TemplateEngine</RepositoryUrl>
         <PackageTags>Docx; Templates</PackageTags>
 
+        <Version>0.1.0</Version>
     </PropertyGroup>
 </Project>
