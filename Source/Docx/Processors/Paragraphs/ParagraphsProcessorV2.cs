@@ -10,7 +10,10 @@ using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Paragraphs;
 
-internal class ParagraphsProcessorV2(ImageProcessorV2 imageProcessor, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
+internal class ParagraphsProcessorV2(
+    ImageProcessorV2 imageProcessor,
+    EngineConfig engineConfig,
+    ILogger logger) : Processor(engineConfig, logger)
 {
     private readonly ImageProcessorV2 _imageProcessor = imageProcessor;
 
@@ -55,39 +58,15 @@ internal class ParagraphsProcessorV2(ImageProcessorV2 imageProcessor, EngineConf
                         }
                     }
                     break;
-                    //case ConditionTemplate ct:
-                    //    {
-                    //        var (lastParagraph, textEnd) = this.ProcessTemplate(ct, paragraphs, context);
-                    //        startTextIndex = textEnd;
-                    //    }
-                    //    break;
+                    case ConditionTemplate ct:
+                    {
+                        (Paragraph lastParagraph, int textEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.Logger);
+                        startTextIndex = textEnd;
+                    }
+                    break;
             }
         } while (template != Template.Empty);
     }
-
-    //private (Paragraph, int) ProcessTemplate(
-    //    ConditionTemplate template,
-    //    ICollection<Paragraph> bodyParagraphs,
-    //    Model context)
-    //{
-    //    if (!(context.Find(template.Start.ModelDescription.Expression) is ConditionModel conditionModel))
-    //    {
-    //        return (bodyParagraphs.ElementAt(template.End.Position.RowIndex), template.End.Position.TextIndex);
-    //    }
-
-    //    var startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
-    //    startParagraph.ReplaceToken(template.Start, Model.Empty, _imageProcessor);
-
-    //    var endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
-    //    var textEnd = endParagraph.ReplaceToken(template.End, Model.Empty, _imageProcessor);
-
-    //    if (!conditionModel.IsFullfilled(template.Start.ModelDescription.Parameters))
-    //    {
-    //        bodyParagraphs.RemoveTextAndElementsBetween(template.Start.Position, template.End.Position);
-    //    }
-
-    //    return (endParagraph, textEnd);
-    //}
 }
 
 file static class TempalteOperations
@@ -149,6 +128,34 @@ file static class TempalteOperations
         foreach (var e in result)
         {
             endParagraph.InsertBeforeSelf(e);
+        }
+
+        return (endParagraph, textEnd);
+    }
+
+    public static (Paragraph, int) ProcessConditionTemplate(
+        this ConditionTemplate template,
+        Model context,
+        ICollection<Paragraph> bodyParagraphs,
+        ImageProcessorV2 imageProcessor,
+        ILogger logger)
+    {
+        Model model = context.Find(template.Start.ModelDescription.Expression);
+        if (model is not ConditionModel conditionModel)
+        {
+            logger.LogError("Condition template for non condition model: {modelName}", template.Start.ModelDescription.Expression);
+            return (bodyParagraphs.ElementAt(template.End.Position.RowIndex), template.End.Position.TextIndex);
+        }
+
+        Paragraph startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
+        int _ = startParagraph.ReplaceToken(template.Start, EmptyModel.Instance, imageProcessor);
+
+        Paragraph endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
+        int textEnd = endParagraph.ReplaceToken(template.End, EmptyModel.Instance, imageProcessor);
+
+        if (!conditionModel.Evaluate(template.Start.ModelDescription.Parameters))
+        {
+            bodyParagraphs.RemoveTextAndElementsBetween(template.Start.Position, template.End.Position);
         }
 
         return (endParagraph, textEnd);

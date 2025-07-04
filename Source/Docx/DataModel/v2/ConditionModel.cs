@@ -10,5 +10,8 @@ public sealed class ConditionModel(Func<bool> statement) : ValueModelBase
     {
     }
 
-    public bool Evaluate() => _statement();
+    public bool Evaluate(string parameter) =>
+        string.IsNullOrWhiteSpace(parameter) || parameter.ToLower() != "false"
+            ? _statement()
+            : !_statement();
 }

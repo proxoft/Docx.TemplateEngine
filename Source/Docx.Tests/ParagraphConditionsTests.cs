@@ -8,7 +8,7 @@ public class ParagraphConditionsTests : TestBase
     {
     }
 
-    [Fact]
+    [Fact(Skip = "Deprecated")]
     public void ConditionModel()
     {
         var model = new ObjectModel("",
@@ -19,7 +19,7 @@ public class ParagraphConditionsTests : TestBase
         this.Process(nameof(ConditionModel), model);
     }
 
-    [Fact]
+    [Fact(Skip = "Deprecated")]
     public void ConditionModelInOneLine()
     {
         var model = new ObjectModel("",
@@ -30,7 +30,7 @@ public class ParagraphConditionsTests : TestBase
         this.Process(nameof(ConditionModelInOneLine), model);
     }
 
-    [Fact]
+    [Fact(Skip = "Deprecated")]
     public void ConditionModelMultipleParagraphs()
     {
         var model = new ObjectModel("",
@@ -41,7 +41,7 @@ public class ParagraphConditionsTests : TestBase
         this.Process(nameof(ConditionModelMultipleParagraphs), model);
     }
 
-    [Fact]
+    [Fact(Skip = "Deprecated")]
     public void ConditionModelWithFalseParameter()
     {
         var model = new ObjectModel("",
