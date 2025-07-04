@@ -20,9 +20,15 @@ internal class CompositeElementProcessorV2(
             logger
         );
 
+    TablesProcessorV2 _tablesProcessor = new(
+            imageProcessor,
+            engineConfig,
+            logger
+        );
+
     public void Process(OpenXmlCompositeElement compositeElement, Model context)
     {
         _paragraphsProcessor.Process(compositeElement, context);
-        // _tablesProcessor.Process(compositeElement, context);
+        _tablesProcessor.Process(compositeElement, context);
     }
 }
