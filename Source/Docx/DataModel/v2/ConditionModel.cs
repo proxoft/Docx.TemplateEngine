@@ -1,0 +1,14 @@
+﻿using System;
+
+namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+
+public sealed class ConditionModel(Func<bool> statement) : ValueModelBase
+{
+    private readonly Func<bool> _statement = statement;
+
+    public ConditionModel(bool value) : this(() => value)
+    {
+    }
+
+    public bool Evaluate() => _statement();
+}

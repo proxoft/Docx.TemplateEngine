@@ -15,6 +15,8 @@ internal class ModelExpression(IEnumerable<string> segments)
 
     public bool IsFinal => _segments.Length <= 1;
 
+    public bool IsEmpty => _segments.Length == 0;
+
     public ModelExpression Child() =>
         new(_segments.Skip(1));
 
