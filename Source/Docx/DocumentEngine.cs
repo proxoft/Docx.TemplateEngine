@@ -8,11 +8,11 @@ using Proxoft.TemplateEngine.Docx.Processors;
 
 namespace Proxoft.TemplateEngine.Docx;
 
-public class DocumentEngineV2(ILogger<DocumentEngineV2> logger)
+public class DocumentEngine(ILogger<DocumentEngine> logger)
 {
-    private readonly ILogger<DocumentEngineV2> _logger = logger;
+    private readonly ILogger<DocumentEngine> _logger = logger;
 
-    public DocumentEngineV2() : this(NullLogger<DocumentEngineV2>.Instance)
+    public DocumentEngine() : this(NullLogger<DocumentEngine>.Instance)
     {
     }
 
@@ -34,12 +34,12 @@ public class DocumentEngineV2(ILogger<DocumentEngineV2> logger)
 
 public static class DocumentEngineExtensions
 {
-    public static byte[] Run(this DocumentEngineV2 engine, byte[] docxTemplate, ObjectModel model, EngineConfig engineConfig)
+    public static byte[] Run(this DocumentEngine engine, byte[] docxTemplate, ObjectModel model, EngineConfig engineConfig)
     {
         using var stream = new MemoryStream(docxTemplate);
         return engine.Run(stream, model, engineConfig);
     }
 
-    public static byte[] Run(this DocumentEngineV2 engine, byte[] docxTemplate, ObjectModel model) =>
+    public static byte[] Run(this DocumentEngine engine, byte[] docxTemplate, ObjectModel model) =>
         engine.Run(docxTemplate, model, EngineConfig.Default);
 }
