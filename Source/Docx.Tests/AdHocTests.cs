@@ -1,8 +1,10 @@
 ﻿namespace Proxoft.TemplateEngine.Docx.Tests;
 
-public class AdHocTests : TestBase
+public class AdHocTests
 {
-    public AdHocTests() : base("AdHoc")
+    private readonly FolderConfig _folderConfig = FolderConfig.Default.Subfolder("AdHoc");
+
+    public AdHocTests()
     {
     }
 

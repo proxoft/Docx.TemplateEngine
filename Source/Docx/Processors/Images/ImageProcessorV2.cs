@@ -13,7 +13,7 @@ using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Images;
 
-internal sealed class ImageProcessorV2(MainDocumentPart mainDocumentPart, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
+internal sealed class ImageProcessorV2(MainDocumentPart mainDocumentPart, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger), IImageProcessorV2
 {
     private readonly MainDocumentPart _mainDocumentPart = mainDocumentPart;
 
@@ -96,7 +96,7 @@ internal sealed class ImageProcessorV2(MainDocumentPart mainDocumentPart, Engine
              EditId = "50D07946"
          });
 
-        Run run = new (element);
+        Run run = new(element);
         return run;
     }
 

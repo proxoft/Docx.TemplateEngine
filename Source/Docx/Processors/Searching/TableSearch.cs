@@ -3,7 +3,8 @@ using System.Linq;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Proxoft.TemplateEngine.Docx.Common;
 using Proxoft.TemplateEngine.Docx.Configurations;
-using Proxoft.TemplateEngine.Docx.DataModel;
+using Proxoft.TemplateEngine.Docx.DataModel.v2;
+using Proxoft.TemplateEngine.Docx.Processors.Images;
 using Proxoft.TemplateEngine.Docx.Processors.Paragraphs;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Searching;
@@ -83,12 +84,12 @@ internal static class TableSearch
         rows.First()
             .Cells().ElementAt(start.Position.CellIndex)
             .Paragraphs().ElementAt(start.Position.ParagraphIndex)
-            .ReplaceToken(start, Model.Empty, null);
+            .ReplaceToken(start, EmptyModel.Instance, NullImageProcessor.Instance);
 
         rows.Last()
             .Cells().ElementAt(end.Position.CellIndex)
             .Paragraphs().ElementAt(end.Position.ParagraphIndex)
-            .ReplaceToken(end, Model.Empty, null);
+            .ReplaceToken(end, EmptyModel.Instance, NullImageProcessor.Instance);
 
         return new OpenXmlTemplate(rows);
     }

@@ -31,3 +31,15 @@ public class DocumentEngineV2(ILogger<DocumentEngineV2> logger)
         return ms.ToArray();
     }
 }
+
+public static class DocumentEngineExtensions
+{
+    public static byte[] Run(this DocumentEngineV2 engine, byte[] docxTemplate, ObjectModel model, EngineConfig engineConfig)
+    {
+        using var stream = new MemoryStream(docxTemplate);
+        return engine.Run(stream, model, engineConfig);
+    }
+
+    public static byte[] Run(this DocumentEngineV2 engine, byte[] docxTemplate, ObjectModel model) =>
+        engine.Run(docxTemplate, model, EngineConfig.Default);
+}

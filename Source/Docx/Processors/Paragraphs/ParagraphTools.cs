@@ -19,102 +19,102 @@ internal static class ParagraphTools
     /// <param name="model"></param>
     /// <param name="imageProcessor"></param>
     /// <returns>Position(index) after the replacement of the token.</returns>
-    public static int ReplaceToken(
-        this Paragraph paragraph,
-        Token token,
-        Model model,
-        IImageProcessor imageProcessor)
-    {
-        var runs = paragraph.Runs().ToArray();
+    //public static int ReplaceToken(
+    //    this Paragraph paragraph,
+    //    Token token,
+    //    Model model,
+    //    IImageProcessor imageProcessor)
+    //{
+    //    var runs = paragraph.Runs().ToArray();
 
-        var (startRunIndex, endRunIndex) = runs.FindIndeces(token.Position.TextIndex, token.ModelDescription.OriginalText.Length);
+    //    var (startRunIndex, endRunIndex) = runs.FindIndeces(token.Position.TextIndex, token.ModelDescription.OriginalText.Length);
 
-        var affectedRuns = runs
-            .Skip(startRunIndex)
-            .Take(endRunIndex - startRunIndex + 1)
-            .ToArray();
+    //    var affectedRuns = runs
+    //        .Skip(startRunIndex)
+    //        .Take(endRunIndex - startRunIndex + 1)
+    //        .ToArray();
 
-        var startRun = affectedRuns.First();
-        var endRun = affectedRuns.Last();
+    //    var startRun = affectedRuns.First();
+    //    var endRun = affectedRuns.Last();
 
-        var previousRunsTextLength = runs
-            .Take(startRunIndex)
-            .TextLength();
+    //    var previousRunsTextLength = runs
+    //        .Take(startRunIndex)
+    //        .TextLength();
 
-        if (startRun != endRun)
-        {
-            var replaceLength = token.ModelDescription.OriginalText.Length
-                - previousRunsTextLength
-                - affectedRuns.Take(affectedRuns.Length - 1).TextLength()
-                + token.Position.TextIndex
-                ;
+    //    if (startRun != endRun)
+    //    {
+    //        var replaceLength = token.ModelDescription.OriginalText.Length
+    //            - previousRunsTextLength
+    //            - affectedRuns.Take(affectedRuns.Length - 1).TextLength()
+    //            + token.Position.TextIndex
+    //            ;
 
-            endRun.ReplaceText(0, replaceLength, string.Empty);
-            var firstText = endRun.Childs<Text>().FirstOrDefault();
-            if(firstText != null)
-            {
-                firstText.Space = SpaceProcessingModeValues.Preserve;
-            }
-        }
+    //        endRun.ReplaceText(0, replaceLength, string.Empty);
+    //        var firstText = endRun.Childs<Text>().FirstOrDefault();
+    //        if(firstText != null)
+    //        {
+    //            firstText.Space = SpaceProcessingModeValues.Preserve;
+    //        }
+    //    }
 
-        var replaceFromIndex = token.Position.TextIndex - previousRunsTextLength;
-        string replacement;
+    //    var replaceFromIndex = token.Position.TextIndex - previousRunsTextLength;
+    //    string replacement;
 
-        int replacementLength;
-        switch (model)
-        {
-            case ImageModel im:
-                replacementLength = 0;
-                startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, string.Empty);
-                startRun.SplitIntoTwoRuns(replaceFromIndex);
+    //    int replacementLength;
+    //    switch (model)
+    //    {
+    //        case ImageModel im:
+    //            replacementLength = 0;
+    //            startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, string.Empty);
+    //            startRun.SplitIntoTwoRuns(replaceFromIndex);
 
-                var imageRun = imageProcessor.AddImage(im, token.ModelDescription.Parameters);
-                startRun.InsertAfterSelf(imageRun);
-                break;
-            default:
-                replacement = model.FormattedValue() ?? string.Empty;
-                replacementLength = replacement.Length;
-                startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, model.FormattedValue());
-                break;
-        }
+    //            var imageRun = imageProcessor.AddImage(im, token.ModelDescription.Parameters);
+    //            startRun.InsertAfterSelf(imageRun);
+    //            break;
+    //        default:
+    //            replacement = model.FormattedValue() ?? string.Empty;
+    //            replacementLength = replacement.Length;
+    //            startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, model.FormattedValue());
+    //            break;
+    //    }
 
-        affectedRuns
-            .Skip(1)
-            .Take(affectedRuns.Length - 2)
-            .RemoveSelfFromParent();
+    //    affectedRuns
+    //        .Skip(1)
+    //        .Take(affectedRuns.Length - 2)
+    //        .RemoveSelfFromParent();
 
-        return token.Position.TextIndex + replacementLength;
-    }
+    //    return token.Position.TextIndex + replacementLength;
+    //}
 
-    public static void RemoveTextAndElementsBetween(
-        this ICollection<Paragraph> paragraphs,
-        TokenPosition from,
-        TokenPosition to)
-    {
-        if (from.ParagraphIndex == to.ParagraphIndex)
-        {
-            paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex, to.TextIndex);
-            return;
-        }
+    //public static void RemoveTextAndElementsBetween(
+    //    this ICollection<Paragraph> paragraphs,
+    //    TokenPosition from,
+    //    TokenPosition to)
+    //{
+    //    if (from.ParagraphIndex == to.ParagraphIndex)
+    //    {
+    //        paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex, to.TextIndex);
+    //        return;
+    //    }
 
-        paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex);
-        paragraphs.ElementAt(to.ParagraphIndex).RemoveText(0, to.TextIndex);
+    //    paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex);
+    //    paragraphs.ElementAt(to.ParagraphIndex).RemoveText(0, to.TextIndex);
 
-        var toSkip = from.ParagraphIndex;
-        if (!string.IsNullOrEmpty(paragraphs.ElementAt(from.ParagraphIndex).InnerText))
-        {
-            toSkip++;
-        }
+    //    var toSkip = from.ParagraphIndex;
+    //    if (!string.IsNullOrEmpty(paragraphs.ElementAt(from.ParagraphIndex).InnerText))
+    //    {
+    //        toSkip++;
+    //    }
 
-        OpenXmlElement e = paragraphs.Skip(toSkip).FirstOrDefault();
-        OpenXmlElement l = paragraphs.ElementAt(to.ParagraphIndex);
-        while(e != null && e != l)
-        {
-            var t = e;
-            e = e.NextSibling();
-            t.Remove();
-        }
-    }
+    //    OpenXmlElement e = paragraphs.Skip(toSkip).FirstOrDefault();
+    //    OpenXmlElement l = paragraphs.ElementAt(to.ParagraphIndex);
+    //    while(e != null && e != l)
+    //    {
+    //        var t = e;
+    //        e = e.NextSibling();
+    //        t.Remove();
+    //    }
+    //}
 
     private static (int startRun, int endRun) FindIndeces(this IEnumerable<Run> runs, int tokenStartTextIndex, int tokenLength)
     {

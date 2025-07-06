@@ -15,7 +15,7 @@ internal static class ParagraphFunctions
         this Paragraph paragraph,
         Token token,
         Model model,
-        ImageProcessorV2 imageProcessor)
+        IImageProcessorV2 imageProcessor)
     {
         Run[] runs = [..paragraph.Runs()];
 
@@ -78,6 +78,37 @@ internal static class ParagraphFunctions
 
         return token.Position.TextIndex + replacementLength;
     }
+
+    public static void RemoveTextAndElementsBetween(
+        this ICollection<Paragraph> paragraphs,
+        TokenPosition from,
+        TokenPosition to)
+    {
+        if (from.ParagraphIndex == to.ParagraphIndex)
+        {
+            paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex, to.TextIndex);
+            return;
+        }
+
+        paragraphs.ElementAt(from.ParagraphIndex).RemoveText(from.TextIndex);
+        paragraphs.ElementAt(to.ParagraphIndex).RemoveText(0, to.TextIndex);
+
+        var toSkip = from.ParagraphIndex;
+        if (!string.IsNullOrEmpty(paragraphs.ElementAt(from.ParagraphIndex).InnerText))
+        {
+            toSkip++;
+        }
+
+        OpenXmlElement? e = paragraphs.Skip(toSkip).FirstOrDefault();
+        OpenXmlElement l = paragraphs.ElementAt(to.ParagraphIndex);
+        while (e != null && e != l)
+        {
+            var t = e;
+            e = e.NextSibling();
+            t.Remove();
+        }
+    }
+
 
     private static (int startRun, int endRun) FindIndeces(this IEnumerable<Run> runs, int tokenStartTextIndex, int tokenLength)
     {
@@ -150,7 +181,7 @@ internal static class ParagraphFunctions
         }
 
         var aggregatedTextLength = 0;
-        Text splittingText = null;
+        Text? splittingText = null;
         int splitAtTextIndex = -1;
 
         foreach (var t in run.Childs<Text>().ToArray())
