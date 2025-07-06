@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Proxoft.TemplateEngine.Docx.Configurations;
-using Proxoft.TemplateEngine.Docx.DataModel.v2;
+using Proxoft.TemplateEngine.Docx.DataModel;
 using Proxoft.TemplateEngine.Docx.Processors;
 
 namespace Proxoft.TemplateEngine.Docx;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 public sealed class ValueModel(Func<string> value) : ValueModelBase
 {

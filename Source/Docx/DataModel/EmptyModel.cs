@@ -1,4 +1,4 @@
-﻿namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+﻿namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 internal class EmptyModel : Model
 {

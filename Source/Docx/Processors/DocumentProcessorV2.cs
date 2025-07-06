@@ -1,13 +1,14 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using Microsoft.Extensions.Logging;
 using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
 using Proxoft.TemplateEngine.Docx.Processors.Images;
 
 namespace Proxoft.TemplateEngine.Docx.Processors;
 
 internal class DocumentProcessorV2(EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
 {
-    public void Process(WordprocessingDocument document, DataModel.v2.ObjectModel documentModel)
+    public void Process(WordprocessingDocument document, ObjectModel documentModel)
     {
         MainDocumentPart? mainPart = document.MainDocumentPart;
         if(mainPart?.Document?.Body is null)

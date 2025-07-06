@@ -1,4 +1,4 @@
-﻿using Proxoft.TemplateEngine.Docx.DataModel.v2;
+﻿using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx.Tests;
 

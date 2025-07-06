@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 public sealed class ConditionModel(Func<bool> statement) : ValueModelBase
 {

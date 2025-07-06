@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 public abstract class ObjectModelBase : Model
 {

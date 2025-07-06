@@ -1,4 +1,4 @@
-﻿namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+﻿namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 public sealed class ImageModel(string imageName, byte[] data) : ValueModelBase
 {

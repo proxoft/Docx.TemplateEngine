@@ -4,7 +4,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Extensions.Logging;
 using Proxoft.TemplateEngine.Docx.Configurations;
-using Proxoft.TemplateEngine.Docx.DataModel.v2;
+using Proxoft.TemplateEngine.Docx.DataModel;
 using SkiaSharp;
 
 using A = DocumentFormat.OpenXml.Drawing;
