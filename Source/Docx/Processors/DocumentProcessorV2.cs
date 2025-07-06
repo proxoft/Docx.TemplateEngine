@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Proxoft.TemplateEngine.Docx.Configurations;
 using Proxoft.TemplateEngine.Docx.Processors.Images;
-using Proxoft.TemplateEngine.Docx.Processors.Paragraphs;
 
 namespace Proxoft.TemplateEngine.Docx.Processors;
 
@@ -24,5 +23,15 @@ internal class DocumentProcessorV2(EngineConfig engineConfig, ILogger logger) : 
         );
 
         processor.Process(mainPart.Document.Body, documentModel);
+
+        foreach (var hp in mainPart.HeaderParts)
+        {
+            processor.Process(hp.Header, documentModel);
+        }
+
+        foreach (var fp in mainPart.FooterParts)
+        {
+            processor.Process(fp.Footer, documentModel);
+        }
     }
 }
