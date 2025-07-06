@@ -58,7 +58,7 @@ internal class ParagraphsProcessorV2(
                         }
                     }
                     break;
-                    case ConditionTemplate ct:
+                case ConditionTemplate ct:
                     {
                         (Paragraph lastParagraph, int textEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.Logger);
                         startTextIndex = textEnd;

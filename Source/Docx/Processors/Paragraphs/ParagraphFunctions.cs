@@ -50,8 +50,7 @@ internal static class ParagraphFunctions
         }
 
         var replaceFromIndex = token.Position.TextIndex - previousRunsTextLength;
-        // string replacement = "";
-        int replacementLength = 0;
+        int replacementLength;
 
         switch (model)
         {
@@ -59,24 +58,17 @@ internal static class ParagraphFunctions
                 replacementLength = vm.Value.Length;
                 startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, vm.Value);
                 break;
+            case ImageModel im:
+                replacementLength = 0;
+                startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, string.Empty);
+                startRun.SplitIntoTwoRuns(replaceFromIndex);
+                Run imageRun = imageProcessor.AddImage(im, token.ModelDescription.Parameters);
+                startRun.InsertAfterSelf(imageRun);
+                break;
             default:
                 replacementLength = 0;
                 startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, "");
                 break;
-
-                //case ImageModel im:
-                //    replacementLength = 0;
-                //    startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, string.Empty);
-                //    startRun.SplitIntoTwoRuns(replaceFromIndex);
-
-                //    var imageRun = imageProcessor.AddImage(im, token.ModelDescription.Parameters);
-                //    startRun.InsertAfterSelf(imageRun);
-                //    break;
-                //default:
-                //    replacement = model.FormattedValue() ?? string.Empty;
-                //    replacementLength = replacement.Length;
-                //    startRun.ReplaceText(replaceFromIndex, token.ModelDescription.OriginalText.Length, model.FormattedValue());
-                //    break;
         }
 
         affectedRuns

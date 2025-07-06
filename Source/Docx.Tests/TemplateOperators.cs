@@ -7,9 +7,6 @@ namespace Proxoft.TemplateEngine.Docx.Tests;
 
 internal static class TemplateOperators
 {
-    //private const string _samplesFolder = "../../../../../Source/Samples/Paragraphs";
-    //private const string _outputFolder = "../../../../TestOutputs/Paragraphs";
-
     public static void ReplacePlaceholders(this string docxSampleFileName, ObjectModel model, FolderConfig folderConfig) =>
         docxSampleFileName.ReplacePlaceholders(model, EngineConfig.Default, folderConfig);
 
