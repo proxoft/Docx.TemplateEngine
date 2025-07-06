@@ -50,6 +50,13 @@ public class ImageModelTest
     }
 
     [Fact]
+    public void ImageInTable()
+    {
+        ObjectModel root = this.CreateDocumentModel("sample.jpeg");
+        nameof(ImageInTable).ReplacePlaceholders(root, _folderConfig);
+    }
+
+    [Fact]
     public void EmptyImage()
     {
         ObjectModel root = this.CreateDocumentModel(new ImageModel("empty.jpeg", []));
