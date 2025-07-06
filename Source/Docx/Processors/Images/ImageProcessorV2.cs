@@ -1,11 +1,11 @@
-﻿using System.Drawing;
-using System.IO;
+﻿using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Extensions.Logging;
 using Proxoft.TemplateEngine.Docx.Configurations;
 using Proxoft.TemplateEngine.Docx.DataModel.v2;
+using SkiaSharp;
 
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
@@ -110,16 +110,14 @@ internal sealed class ImageProcessorV2(MainDocumentPart mainDocumentPart, Engine
         long pixelWidth;
         long pixelHeight;
 
-        using (var ms = new MemoryStream(data))
-        {
-            var image = Image.FromStream(ms);
-            this.Logger.LogInformation("Image size in pixels: {0}x{1}", image.Width, image.Height);
+        SKImage image = SKImage.FromEncodedData(data);
 
-            pixelWidth = image.Width.PxToEmu();
-            pixelHeight = image.Height.PxToEmu();
+        this.Logger.LogInformation("Image size in pixels: {0}x{1}", image.Width, image.Height);
 
-            this.Logger.LogInformation("Image size in emu: {0}x{1}", pixelWidth, pixelHeight);
-        }
+        pixelWidth = image.Width.PxToEmu();
+        pixelHeight = image.Height.PxToEmu();
+
+        this.Logger.LogInformation("Image size in emu: {0}x{1}", pixelWidth, pixelHeight);
 
         var (width, height) = imageParameters.Scale(pixelWidth, pixelHeight);
         this.Logger.LogInformation("Scaled image size in emu: {0}x{1}", width, height);
