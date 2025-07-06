@@ -12,8 +12,8 @@ internal class PolymorphicTypeResolver : DefaultJsonTypeInfoResolver
     {
         JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
 
-        if (jsonTypeInfo.Type == typeof(Model))
-        {
+        //if (jsonTypeInfo.Type == typeof(Model))
+        //{
             //JsonPolymorphismOptions polymorphismOptions = new()
             //{
             //    TypeDiscriminatorPropertyName = "_type",
@@ -30,7 +30,7 @@ internal class PolymorphicTypeResolver : DefaultJsonTypeInfoResolver
             //};
 
             //jsonTypeInfo.PolymorphismOptions = polymorphismOptions;
-        }
+        //}
 
         return jsonTypeInfo;
     }
