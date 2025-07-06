@@ -1,4 +1,6 @@
-﻿namespace Proxoft.TemplateEngine.Docx.DataModel.v2;
+﻿using Proxoft.TemplateEngine.Docx.DataModel.v2;
+
+namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 public abstract partial class Model
 {
