@@ -18,7 +18,7 @@ public class DocumentEngineV2(ILogger<DocumentEngineV2> logger)
 
     public byte[] Run(Stream docxTemplate, ObjectModel model, EngineConfig engineConfig)
     {
-        DocumentProcessorV2 processor = new(engineConfig, _logger);
+        DocumentProcessor processor = new(engineConfig, _logger);
 
         using var ms = new MemoryStream();
         docxTemplate.CopyTo(ms);

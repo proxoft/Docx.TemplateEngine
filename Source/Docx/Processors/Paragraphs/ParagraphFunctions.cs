@@ -15,7 +15,7 @@ internal static class ParagraphFunctions
         this Paragraph paragraph,
         Token token,
         Model model,
-        IImageProcessorV2 imageProcessor)
+        IImageProcessor imageProcessor)
     {
         Run[] runs = [..paragraph.Runs()];
 

@@ -8,18 +8,18 @@ using Proxoft.TemplateEngine.Docx.Processors.Tables;
 
 namespace Proxoft.TemplateEngine.Docx.Processors;
 
-internal class CompositeElementProcessorV2(
-    ImageProcessorV2 imageProcessor,
+internal class CompositeElementProcessor(
+    ImageProcessor imageProcessor,
     EngineConfig engineConfig,
     ILogger logger) : Processor(engineConfig, logger)
 {
-    ParagraphsProcessorV2 _paragraphsProcessor = new(
+    ParagraphsProcessor _paragraphsProcessor = new(
             imageProcessor,
             engineConfig,
             logger
         );
 
-    TablesProcessorV2 _tablesProcessor = new(
+    TablesProcessor _tablesProcessor = new(
             imageProcessor,
             engineConfig,
             logger

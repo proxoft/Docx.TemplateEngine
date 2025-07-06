@@ -11,9 +11,9 @@ using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Tables;
 
-internal sealed class TablesProcessorV2(ImageProcessorV2 imageProcessor, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
+internal sealed class TablesProcessor(ImageProcessor imageProcessor, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
 {
-    private readonly ImageProcessorV2 _imageProcessor = imageProcessor;
+    private readonly ImageProcessor _imageProcessor = imageProcessor;
 
     public void Process(OpenXmlCompositeElement parent, Model context)
     {
@@ -73,7 +73,7 @@ internal sealed class TablesProcessorV2(ImageProcessorV2 imageProcessor, EngineC
 
     private void ProcessCellsOfRow(TableRow row, Model context)
     {
-        CompositeElementProcessorV2 compositeProcessor = new(_imageProcessor, this.EngineConfig, this.Logger);
+        CompositeElementProcessor compositeProcessor = new(_imageProcessor, this.EngineConfig, this.Logger);
         foreach (var cell in row.Cells())
         {
             compositeProcessor.Process(cell, context);

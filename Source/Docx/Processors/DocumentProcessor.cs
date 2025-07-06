@@ -6,7 +6,7 @@ using Proxoft.TemplateEngine.Docx.Processors.Images;
 
 namespace Proxoft.TemplateEngine.Docx.Processors;
 
-internal class DocumentProcessorV2(EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
+internal class DocumentProcessor(EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
 {
     public void Process(WordprocessingDocument document, ObjectModel documentModel)
     {
@@ -17,8 +17,8 @@ internal class DocumentProcessorV2(EngineConfig engineConfig, ILogger logger) : 
             return;
         }
 
-        CompositeElementProcessorV2 processor = new(
-            new ImageProcessorV2(mainPart, this.EngineConfig, this.Logger),
+        CompositeElementProcessor processor = new(
+            new ImageProcessor(mainPart, this.EngineConfig, this.Logger),
             this.EngineConfig,
             this.Logger
         );

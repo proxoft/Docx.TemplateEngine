@@ -10,12 +10,12 @@ using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Paragraphs;
 
-internal class ParagraphsProcessorV2(
-    ImageProcessorV2 imageProcessor,
+internal class ParagraphsProcessor(
+    ImageProcessor imageProcessor,
     EngineConfig engineConfig,
     ILogger logger) : Processor(engineConfig, logger)
 {
-    private readonly ImageProcessorV2 _imageProcessor = imageProcessor;
+    private readonly ImageProcessor _imageProcessor = imageProcessor;
 
     public void Process(OpenXmlCompositeElement parent, Model context)
     {
@@ -71,7 +71,7 @@ internal class ParagraphsProcessorV2(
 
 file static class TempalteOperations
 {
-    public static int Process(this SingleValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessorV2 imageProcessor)
+    public static int Process(this SingleValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessor imageProcessor)
     {
         Paragraph p = bodyParagraphs.ElementAt(template.Token.Position.ParagraphIndex);
         Model model = context.Find(template.Token.ModelDescription.Expression);
@@ -83,7 +83,7 @@ file static class TempalteOperations
         this ArrayTemplate template,
         Model context,
         IReadOnlyCollection<Paragraph> bodyParagraphs,
-        ImageProcessorV2 imageProcessor,
+        ImageProcessor imageProcessor,
         EngineConfig engineConfig,
         ILogger logger)
     {
@@ -94,7 +94,7 @@ file static class TempalteOperations
             return (null, 0);
         }
 
-        CompositeElementProcessorV2 compositeElementProcessor = new (imageProcessor, engineConfig, logger);
+        CompositeElementProcessor compositeElementProcessor = new (imageProcessor, engineConfig, logger);
         OpenXmlElement[] result = [];
 
         foreach (var item in collection.Items)
@@ -137,7 +137,7 @@ file static class TempalteOperations
         this ConditionTemplate template,
         Model context,
         ICollection<Paragraph> bodyParagraphs,
-        ImageProcessorV2 imageProcessor,
+        ImageProcessor imageProcessor,
         ILogger logger)
     {
         Model model = context.Find(template.Start.ModelDescription.Expression);

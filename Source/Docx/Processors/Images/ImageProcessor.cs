@@ -13,7 +13,7 @@ using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Images;
 
-internal sealed class ImageProcessorV2(MainDocumentPart mainDocumentPart, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger), IImageProcessorV2
+internal sealed class ImageProcessor(MainDocumentPart mainDocumentPart, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger), IImageProcessor
 {
     private readonly MainDocumentPart _mainDocumentPart = mainDocumentPart;
 

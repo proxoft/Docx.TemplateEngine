@@ -3,7 +3,7 @@ using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Images;
 
-internal interface IImageProcessorV2
+internal interface IImageProcessor
 {
     Run AddImage(ImageModel model, string parameters);
 }
