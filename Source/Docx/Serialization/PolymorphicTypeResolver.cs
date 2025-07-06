@@ -14,22 +14,22 @@ internal class PolymorphicTypeResolver : DefaultJsonTypeInfoResolver
 
         if (jsonTypeInfo.Type == typeof(Model))
         {
-            JsonPolymorphismOptions polymorphismOptions = new()
-            {
-                TypeDiscriminatorPropertyName = "_type",
-                IgnoreUnrecognizedTypeDiscriminators = true,
-                UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToBaseType,
-                DerivedTypes =
-                    {
-                        new JsonDerivedType(typeof(SimpleModel), "value"),
-                        new JsonDerivedType(typeof(ConditionModel), "condition"),
-                        new JsonDerivedType(typeof(ImageModel), "image"),
-                        new JsonDerivedType(typeof(ObjectModel), "object"),
-                        new JsonDerivedType(typeof(CollectionModel), "collection"),
-                    }
-            };
+            //JsonPolymorphismOptions polymorphismOptions = new()
+            //{
+            //    TypeDiscriminatorPropertyName = "_type",
+            //    IgnoreUnrecognizedTypeDiscriminators = true,
+            //    UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToBaseType,
+            //    DerivedTypes =
+            //        {
+            //            new JsonDerivedType(typeof(SimpleModel), "value"),
+            //            new JsonDerivedType(typeof(ConditionModel), "condition"),
+            //            new JsonDerivedType(typeof(ImageModel), "image"),
+            //            new JsonDerivedType(typeof(ObjectModel), "object"),
+            //            new JsonDerivedType(typeof(CollectionModel), "collection"),
+            //        }
+            //};
 
-            jsonTypeInfo.PolymorphismOptions = polymorphismOptions;
+            //jsonTypeInfo.PolymorphismOptions = polymorphismOptions;
         }
 
         return jsonTypeInfo;

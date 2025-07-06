@@ -22,11 +22,11 @@ public static class Serializer
     static Serializer()
     {
         // Register custom converters
-        _jsonSerializerOptions.Converters.Add(new Converters.ObjectModelJsonConverter());
-        _jsonSerializerOptions.Converters.Add(new Converters.SimpleModelJsonConverter());
-        _jsonSerializerOptions.Converters.Add(new Converters.ConditionModelJsonConverter());
-        _jsonSerializerOptions.Converters.Add(new Converters.CollectionModelJsonConverter());
-        _jsonSerializerOptions.Converters.Add(new Converters.ImageModelJsonConverter());
+        //_jsonSerializerOptions.Converters.Add(new Converters.ObjectModelJsonConverter());
+        //_jsonSerializerOptions.Converters.Add(new Converters.SimpleModelJsonConverter());
+        //_jsonSerializerOptions.Converters.Add(new Converters.ConditionModelJsonConverter());
+        //_jsonSerializerOptions.Converters.Add(new Converters.CollectionModelJsonConverter());
+        //_jsonSerializerOptions.Converters.Add(new Converters.ImageModelJsonConverter());
     }
 
     public static string Serialize(Model root)
