@@ -8,7 +8,8 @@ public class ParagraphConditionModelTest
 
     private readonly ObjectModel _documentModel = ObjectModel.Create(
         ("trueCondition", new ConditionModel(true)),
-        ("falseCondition", new ConditionModel(false))
+        ("falseCondition", new ConditionModel(false)),
+        ("xyz", new ValueModel("the value of XYZ"))
     );
 
     [Fact]
@@ -57,5 +58,11 @@ public class ParagraphConditionModelTest
     public void WhenFalse_And_ContainsTable()
     {
         nameof(WhenFalse_And_ContainsTable).ReplacePlaceholders(_documentModel, _folderConfig);
+    }
+
+    [Fact]
+    public void PlaceholderInsideOfCondition()
+    {
+        nameof(PlaceholderInsideOfCondition).ReplacePlaceholders(_documentModel, _folderConfig);
     }
 }
