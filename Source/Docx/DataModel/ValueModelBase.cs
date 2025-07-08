@@ -2,14 +2,14 @@
 
 public abstract class ValueModelBase : Model
 {
-    internal override sealed Model Find(ModelExpression expression)
+    internal override sealed Model Find(ModelExpression expression, string thisCharacter)
     {
         if(expression.IsEmpty
-            || expression.Root == ThisChar && expression.Child().IsEmpty)
+            || expression.Root == thisCharacter && expression.Child().IsEmpty)
         {
             return this;
         }
 
-        return this.Parent.Find(expression);
+        return this.Parent.Find(expression, thisCharacter);
     }
 }

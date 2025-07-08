@@ -2,9 +2,7 @@
 
 public abstract partial class Model
 {
-    internal const string ThisChar  = "$";
-
     internal Model Parent { get; set; } = EmptyModel.Instance;
 
-    internal abstract Model Find(ModelExpression expression);
+    internal abstract Model Find(ModelExpression expression, string thisCharacter);
 }

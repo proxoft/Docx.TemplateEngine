@@ -4,7 +4,7 @@ internal class EmptyModel : Model
 {
     public static readonly EmptyModel Instance = new();
 
-    internal override Model Find(ModelExpression expression)
+    internal override Model Find(ModelExpression expression, string thisCharacter)
     {
         return Instance;
     }

@@ -34,7 +34,7 @@ internal class ParagraphsProcessor(
             switch (template)
             {
                 case SingleValueTemplate svt:
-                    int endOfText = svt.Process(paragraphs, context, _imageProcessor);
+                    int endOfText = svt.Process(paragraphs, context, _imageProcessor, this.EngineConfig);
                     startTextIndex = endOfText;
                     break;
 
@@ -60,7 +60,7 @@ internal class ParagraphsProcessor(
                     break;
                 case ConditionTemplate ct:
                     {
-                        (Paragraph lastParagraph, int textEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.Logger);
+                        (Paragraph lastParagraph, int textEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
                         startTextIndex = textEnd;
                     }
                     break;
@@ -71,10 +71,10 @@ internal class ParagraphsProcessor(
 
 file static class TempalteOperations
 {
-    public static int Process(this SingleValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessor imageProcessor)
+    public static int Process(this SingleValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessor imageProcessor, EngineConfig engineConfig)
     {
         Paragraph p = bodyParagraphs.ElementAt(template.Token.Position.ParagraphIndex);
-        Model model = context.Find(template.Token.ModelDescription.Expression);
+        Model model = context.Find(template.Token.ModelDescription.Expression, engineConfig.ThisCharacter);
         int textEndIndex = p.ReplaceToken(template.Token, model, imageProcessor);
         return textEndIndex;
     }
@@ -87,7 +87,7 @@ file static class TempalteOperations
         EngineConfig engineConfig,
         ILogger logger)
     {
-        Model model = context.Find(template.Start.ModelDescription.Expression);
+        Model model = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter);
         if(model is not CollectionModel collection)
         {
             logger.LogError("Array template for non collection model: {modelName}", template.Start.ModelDescription.Expression);
@@ -138,9 +138,10 @@ file static class TempalteOperations
         Model context,
         ICollection<Paragraph> bodyParagraphs,
         ImageProcessor imageProcessor,
+        EngineConfig engineConfig,
         ILogger logger)
     {
-        Model model = context.Find(template.Start.ModelDescription.Expression);
+        Model model = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter);
         if (model is not ConditionModel conditionModel)
         {
             logger.LogError("Condition template for non condition model: {modelName}", template.Start.ModelDescription.Expression);

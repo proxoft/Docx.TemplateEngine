@@ -16,10 +16,10 @@ public abstract class ObjectModelBase : Model
         }
     }
 
-    internal override sealed Model Find(ModelExpression expression)
+    internal override sealed Model Find(ModelExpression expression, string thisCharacter)
     {
         ModelExpression childExpression = expression;
-        if (expression.Root == ThisChar)
+        if (expression.Root == thisCharacter)
         {
             childExpression = childExpression.Child();
         }
@@ -31,9 +31,9 @@ public abstract class ObjectModelBase : Model
                 return child;
             }
 
-            return child.Find(childExpression.Child());
+            return child.Find(childExpression.Child(), thisCharacter);
         }
 
-        return this.Parent.Find(expression);
+        return this.Parent.Find(expression, thisCharacter);
     }
 }

@@ -82,7 +82,7 @@ internal sealed class TablesProcessor(ImageProcessor imageProcessor, EngineConfi
 
     private int ProcessTemplate(ArrayTemplate template, Table table, Model context)
     {
-        if (!(context.Find(template.Start.ModelDescription.Expression) is CollectionModel collection))
+        if (context.Find(template.Start.ModelDescription.Expression, this.EngineConfig.ThisCharacter) is not CollectionModel collection)
         {
             return template.End.Position.RowIndex + 1;
         }

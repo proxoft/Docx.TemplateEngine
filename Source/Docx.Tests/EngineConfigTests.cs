@@ -13,7 +13,8 @@ public class EngineConfigTests
         EngineConfig config = new(
             new PlaceholderConfig("{{", "}}", ".", ":"),
             ArrayConfig.Default,
-            ConditionConfig.Default);
+            ConditionConfig.Default,
+            "$");
 
         ObjectModel root = ObjectModel.Create(
             ("xyz", new ValueModel("The real value of XYZ"))
