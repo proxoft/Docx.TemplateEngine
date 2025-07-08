@@ -4,7 +4,7 @@ namespace Proxoft.TemplateEngine.Docx.Tests;
 
 public class ParagraphValueModelTest
 {
-    private readonly FolderConfig _folderConfig = FolderConfig.Default.Subfolder("Paragraphs");
+    private readonly FolderConfig _folderConfig = FolderConfig.Default.Subfolder("Paragraphs_ValueModel");
 
     private readonly ObjectModel _documentModel = new(
         new ()

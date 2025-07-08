@@ -1,6 +1,4 @@
-﻿using Proxoft.TemplateEngine.Docx.DataModel;
-
-namespace Proxoft.TemplateEngine.Docx.DataModel;
+﻿namespace Proxoft.TemplateEngine.Docx.DataModel;
 
 public abstract partial class Model
 {
