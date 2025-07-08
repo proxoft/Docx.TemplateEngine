@@ -7,10 +7,10 @@ namespace Proxoft.TemplateEngine.Docx.Tests;
 
 internal static class TemplateOperators
 {
-    public static void ReplacePlaceholders(this string docxSampleFileName, ObjectModel model, FolderConfig folderConfig) =>
+    public static string ReplacePlaceholders(this string docxSampleFileName, ObjectModel model, FolderConfig folderConfig) =>
         docxSampleFileName.ReplacePlaceholders(model, EngineConfig.Default, folderConfig);
 
-    public static void ReplacePlaceholders(this string docxSampleFileName, ObjectModel model, EngineConfig config, FolderConfig folderConfig)
+    public static string ReplacePlaceholders(this string docxSampleFileName, ObjectModel model, EngineConfig config, FolderConfig folderConfig)
     {
         if (!Directory.Exists(folderConfig.OutputFolder))
         {
@@ -30,5 +30,7 @@ internal static class TemplateOperators
         var docx = engine.Run(templateStream, model, config);
 
         File.WriteAllBytes(outputFileName, docx);
+
+        return outputFileName;
     }
 }

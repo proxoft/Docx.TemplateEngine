@@ -17,7 +17,9 @@ public class ParagraphCollectionModelTest
             )
         );
 
-        nameof(CollectionModel).ReplacePlaceholders(documentModel, _folderConfig);
+        nameof(CollectionModel)
+            .ReplacePlaceholders(documentModel, _folderConfig)
+            .AssertResultAndExpectedInnerTextAreaEqual();
     }
 
     [Fact]
