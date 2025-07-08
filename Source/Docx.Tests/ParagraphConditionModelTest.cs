@@ -65,4 +65,12 @@ public class ParagraphConditionModelTest
     {
         nameof(PlaceholderInsideOfCondition).ReplacePlaceholders(_documentModel, _folderConfig);
     }
+
+    [Fact]
+    public void MissingConditionModelEvaluatesAsFalse()
+    {
+        nameof(MissingConditionModelEvaluatesAsFalse)
+            .ReplacePlaceholders(_documentModel, _folderConfig)
+            .AssertResultAndExpectedInnerTextAreaEqual();
+    }
 }

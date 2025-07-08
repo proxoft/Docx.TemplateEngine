@@ -141,11 +141,10 @@ file static class TempalteOperations
         EngineConfig engineConfig,
         ILogger logger)
     {
-        Model model = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter);
-        if (model is not ConditionModel conditionModel)
+        ConditionModel? conditionModel = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter) as ConditionModel;
+        if (conditionModel is null)
         {
-            logger.LogError("Condition template for non condition model: {modelName}", template.Start.ModelDescription.Expression);
-            return (bodyParagraphs.ElementAt(template.End.Position.RowIndex), template.End.Position.TextIndex);
+            logger.LogError("ConditionModel is missing or Condition template found for non condition model: {modelName}", template.Start.ModelDescription.Expression);
         }
 
         Paragraph startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
@@ -154,11 +153,12 @@ file static class TempalteOperations
         Paragraph endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
         int textEnd = endParagraph.ReplaceToken(template.End, EmptyModel.Instance, imageProcessor);
 
-        if (!conditionModel.Evaluate(template.Start.ModelDescription.Parameters))
+        bool suttisfied = conditionModel?.Evaluate(template.Start.ModelDescription.Parameters) ?? false;
+        if (!suttisfied)
         {
             bodyParagraphs.RemoveTextAndElementsBetween(template.Start.Position, template.End.Position);
         }
 
-        return (endParagraph, textEnd);
+        return(endParagraph, textEnd);
     }
 }
