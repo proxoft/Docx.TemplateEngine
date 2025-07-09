@@ -1,5 +1,5 @@
 # Docx.TemplateEngine
-Docx TemplateEngine is a tool for processing Docx templates. The user create a docx document with custom placeholders e.g. {order.totalPrice}.
+Docx TemplateEngine is a tool for processing Docx templates. The user create a docx document with custom placeholders/markdown e.g. {order.totalPrice}.
 It is necessary to create a corresponding Template model tree in the code:
 
 ```cs
@@ -18,6 +18,16 @@ byte[] docx = engine.Run(templateStream, documentModel, config);
 
 File.WriteAllBytes("C:/Temp/processedDocument.docx", docx);
 ```
+
+The styling of placeholders is taken into account and filled text takes over the styles.
+It is possible to use placeholders for:
+- values
+- objects with values
+- conditions (if condition is evaluated as false, the content is removed from document)
+- images
+- collections
+    - in paragraphs
+    - in tables (repeats rows within the collection markdown)
 
 ## Example
 
