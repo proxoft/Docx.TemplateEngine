@@ -40,6 +40,27 @@ public class ParagraphCollectionModelTest
         nameof(CollectionOfObjectModel).ReplacePlaceholders(documentModel, _folderConfig);
     }
 
+    [Fact(Skip = "Not implemented yet")]
+    public void CollectionOfObjectModelWithCondition()
+    {
+        ObjectModel[] childs = [
+            ..Enumerable
+                .Range(0, 5)
+                .Select(i => ObjectModel.Create(
+                    ("value", new ValueModel($"Value {i}")),
+                    ("condition", new ConditionModel(i % 2 == 0))
+                ))
+        ];
+
+        ObjectModel documentModel = ObjectModel.Create(
+            ("collection", new CollectionModel(childs))
+        );
+
+        nameof(CollectionOfObjectModelWithCondition)
+            .ReplacePlaceholders(documentModel, _folderConfig)
+            .AssertResultAndExpectedInnerTextAreaEqual();
+    }
+
     [Fact]
     public void CollectionModelParagraphs()
     {
