@@ -33,14 +33,14 @@ internal class ParagraphsProcessor(
 
             switch (template)
             {
-                case SingleValueTemplate svt:
+                case ValueTemplate svt:
                     int endOfText = svt.Process(paragraphs, context, _imageProcessor, this.EngineConfig);
                     startTextIndex = endOfText;
                     break;
 
                 case ArrayTemplate at:
                     {
-                        (Paragraph? lastParagraph, int textEnd) = at.ProcessArrayTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
+                        (Paragraph? lastParagraph, int continueTextEnd) = at.ProcessArrayTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
                         if(lastParagraph is null)
                         {
                             paragraphs = [.. paragraphs.Skip(at.End.Position.ParagraphIndex + 1)];
@@ -54,14 +54,14 @@ internal class ParagraphsProcessor(
                                     .OfType<Paragraph>()
                                     .SkipWhile(p => p != lastParagraph)
                             ];
-                            startTextIndex = textEnd;
+                            startTextIndex = continueTextEnd;
                         }
                     }
                     break;
                 case ConditionTemplate ct:
                     {
-                        (Paragraph lastParagraph, int textEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
-                        startTextIndex = textEnd;
+                        (Paragraph lastParagraph, int continueTextEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
+                        startTextIndex = continueTextEnd;
                     }
                     break;
             }
@@ -71,7 +71,7 @@ internal class ParagraphsProcessor(
 
 file static class TempalteOperations
 {
-    public static int Process(this SingleValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessor imageProcessor, EngineConfig engineConfig)
+    public static int Process(this ValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessor imageProcessor, EngineConfig engineConfig)
     {
         Paragraph p = bodyParagraphs.ElementAt(template.Token.Position.ParagraphIndex);
         Model model = context.Find(template.Token.ModelDescription.Expression, engineConfig.ThisCharacter);
@@ -151,7 +151,7 @@ file static class TempalteOperations
         int _ = startParagraph.ReplaceToken(template.Start, EmptyModel.Instance, imageProcessor);
 
         Paragraph endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
-        int textEnd = endParagraph.ReplaceToken(template.End, EmptyModel.Instance, imageProcessor);
+        int textEnd = template.Start.Position.TextIndex;
 
         bool suttisfied = conditionModel?.Evaluate(template.Start.ModelDescription.Parameters) ?? false;
         if (!suttisfied)

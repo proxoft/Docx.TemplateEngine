@@ -40,7 +40,7 @@ public class ParagraphCollectionModelTest
         nameof(CollectionOfObjectModel).ReplacePlaceholders(documentModel, _folderConfig);
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public void CollectionOfObjectModelWithCondition()
     {
         ObjectModel[] childs = [

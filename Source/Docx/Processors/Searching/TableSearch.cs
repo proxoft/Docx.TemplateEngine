@@ -26,7 +26,7 @@ internal static class TableSearch
                 var template = paragraphs.FindNextTemplate(0, engineConfig, rowIndex, cellIndex, simpleValue: false);
                 switch (template)
                 {
-                    case SingleValueTemplate svt:
+                    case ValueTemplate svt:
                         return svt;
                     case ArrayTemplate at when at.IsComplete && !at.Start.Position.IsSameRowCell(at.End.Position):
                         return at;

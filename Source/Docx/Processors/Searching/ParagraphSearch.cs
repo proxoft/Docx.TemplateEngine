@@ -44,7 +44,7 @@ internal static class ParagraphSearch
             switch (token.TokenType)
             {
                 case TokenType.SingleValue:
-                    return new SingleValueTemplate(token);
+                    return new ValueTemplate(token);
                 case TokenType.CollectionBegin:
                     {
                         var closeToken = paragraphs.FindCloseToken(token, config, continueAfterOpenToken: true, tableRowIndex, tableCellIndex);
