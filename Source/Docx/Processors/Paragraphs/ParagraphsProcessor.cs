@@ -90,8 +90,8 @@ file static class TempalteOperations
         Model model = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter);
         if(model is not CollectionModel collection)
         {
-            logger.LogError("Array template for non collection model: {modelName}", template.Start.ModelDescription.Expression);
-            return (null, 0);
+            logger.LogError("Array template for non collection model: {placeholder}", template.Start.ModelDescription.OriginalText);
+            collection = new CollectionModel([]); // fallback to empty collection
         }
 
         CompositeElementProcessor compositeElementProcessor = new (imageProcessor, engineConfig, logger);
@@ -144,7 +144,7 @@ file static class TempalteOperations
         ConditionModel? conditionModel = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter) as ConditionModel;
         if (conditionModel is null)
         {
-            logger.LogError("ConditionModel is missing or Condition template found for non condition model: {modelName}", template.Start.ModelDescription.Expression);
+            logger.LogError("ConditionModel is missing or Condition template found for non condition model: {modelName}", template.Start.ModelDescription.OriginalText);
         }
 
         Paragraph startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
