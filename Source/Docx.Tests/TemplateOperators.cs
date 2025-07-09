@@ -24,7 +24,7 @@ internal static class TemplateOperators
         }
 
         var inputFileName = $"{folderConfig.SamplesFolder}/{docxSampleFileName}.docx";
-        using var templateStream = File.Open(inputFileName, FileMode.Open, FileAccess.Read);
+        using FileStream templateStream = File.Open(inputFileName, FileMode.Open, FileAccess.Read);
 
         DocumentEngine engine = new(NullLogger<DocumentEngine>.Instance);
         var docx = engine.Run(templateStream, model, config);
