@@ -90,8 +90,8 @@ file static class TempalteOperations
         Model model = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter);
         if(model is not CollectionModel collection)
         {
-            logger.LogError("Array template for non collection model: {modelName}", template.Start.ModelDescription.OriginalText);
-            return (null, 0);
+            logger.LogError("Array template for non collection model: {placeholder}", template.Start.ModelDescription.OriginalText);
+            collection = new CollectionModel([]); // fallback to empty collection
         }
 
         CompositeElementProcessor compositeElementProcessor = new (imageProcessor, engineConfig, logger);

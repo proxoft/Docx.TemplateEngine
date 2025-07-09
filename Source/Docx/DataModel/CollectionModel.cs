@@ -37,7 +37,13 @@ public sealed class CollectionModel : Model
 
     internal override Model Find(ModelExpression expression, string thisCharacter)
     {
-        switch (expression.Root)
+        ModelExpression childExpression = expression;
+        if (expression.Root == thisCharacter)
+        {
+            childExpression = childExpression.Child();
+        }
+
+        switch (childExpression.Root)
         {
             case "length":
                 return _length;
@@ -47,13 +53,8 @@ public sealed class CollectionModel : Model
                 return _notEmpty;
         }
 
-        if(expression.Root == thisCharacter)
+        if (childExpression.IsFinal)
         {
-            if (expression.IsFinal)
-            {
-                return this;
-            }
-
             return EmptyModel.Instance;
         }
 
