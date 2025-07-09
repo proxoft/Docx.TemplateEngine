@@ -1,45 +1,41 @@
-﻿using System.Drawing;
-using System.IO;
+﻿using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Extensions.Logging;
+using Proxoft.TemplateEngine.Docx.Configurations;
+using Proxoft.TemplateEngine.Docx.DataModel;
+using SkiaSharp;
+
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
-using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Images;
 
-internal class ImageProcessor(MainDocumentPart mainDocumentPart, ILogger logger) : IImageProcessor
+internal sealed class ImageProcessor(MainDocumentPart mainDocumentPart, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger), IImageProcessor
 {
     private readonly MainDocumentPart _mainDocumentPart = mainDocumentPart;
-    private readonly ILogger _logger = logger;
 
     public Run AddImage(ImageModel model, string parameters)
     {
-        var imagePartType = model.ImageName.ImagePartTypeFromName();
-        var imagePart = _mainDocumentPart.AddImagePart(imagePartType);
+        PartTypeInfo imagePartType = model.ImageName.ImagePartTypeFromName();
+        ImagePart imagePart = _mainDocumentPart.AddImagePart(imagePartType);
 
-        using(var ms = new MemoryStream(model.Data))
+        using (var ms = new MemoryStream(model.Data))
         {
             imagePart.FeedData(ms);
         }
 
-        _logger.LogInformation("Image parameters string: {0}", parameters);
-        var ip = ImageParameters.FromString(parameters);
-        _logger.LogInformation("Image parameters in emu: {0}", ip.ToString());
-
+        ImageParameters ip = ImageParameters.FromString(parameters);
         var (width, height) = this.GetImageSizeInEmu(model.Data, ip);
-
-
-        var run = this.CreateRun(model.ImageName, _mainDocumentPart.GetIdOfPart(imagePart), width, height);
+        Run run = this.CreateRun(model.ImageName, _mainDocumentPart.GetIdOfPart(imagePart), width, height);
         return run;
     }
 
     private Run CreateRun(string imageName, string relationshipId, long imageWidth, long imageHeight)
     {
-        var element = new Drawing(
+        Drawing element = new(
          new DW.Inline(
              new DW.Extent() { Cx = imageWidth, Cy = imageHeight },
              new DW.EffectExtent()
@@ -100,13 +96,13 @@ internal class ImageProcessor(MainDocumentPart mainDocumentPart, ILogger logger)
              EditId = "50D07946"
          });
 
-        var run = new Run(element);
+        Run run = new(element);
         return run;
     }
 
     private (long width, long height) GetImageSizeInEmu(byte[] data, ImageParameters imageParameters)
     {
-        if(data.Length == 0)
+        if (data.Length == 0)
         {
             return (0, 0);
         }
@@ -114,19 +110,17 @@ internal class ImageProcessor(MainDocumentPart mainDocumentPart, ILogger logger)
         long pixelWidth;
         long pixelHeight;
 
-        using(var ms = new MemoryStream(data))
-        {
-            var image = Image.FromStream(ms);
-            _logger.LogInformation("Image size in pixels: {0}x{1}", image.Width, image.Height);
+        SKImage image = SKImage.FromEncodedData(data);
 
-            pixelWidth = image.Width.PxToEmu();
-            pixelHeight = image.Height.PxToEmu();
+        this.Logger.LogInformation("Image size in pixels: {0}x{1}", image.Width, image.Height);
 
-            _logger.LogInformation("Image size in emu: {0}x{1}", pixelWidth, pixelHeight);
-        }
+        pixelWidth = image.Width.PxToEmu();
+        pixelHeight = image.Height.PxToEmu();
+
+        this.Logger.LogInformation("Image size in emu: {0}x{1}", pixelWidth, pixelHeight);
 
         var (width, height) = imageParameters.Scale(pixelWidth, pixelHeight);
-        _logger.LogInformation("Scaled image size in emu: {0}x{1}", width, height);
+        this.Logger.LogInformation("Scaled image size in emu: {0}x{1}", width, height);
 
         return (width, height);
     }

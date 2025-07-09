@@ -2,21 +2,27 @@
 
 namespace Proxoft.TemplateEngine.Docx.Tests;
 
-public class HeadersFootersTests : TestBase
+public class HeadersFootersTests
 {
-    public HeadersFootersTests() : base("HeadersFooters")
-    {
-    }
+    private readonly FolderConfig _folderConfig = FolderConfig.Default.Subfolder("HeadersFooters");
 
     [Fact]
     public void SimpleHeader()
     {
-        this.Process(nameof(SimpleHeader), new SimpleModel("xyz", "The real value of XYZ"));
+        ObjectModel documentModel = ObjectModel.Create(
+            ("xyz",new ValueModel("The real value of XYZ"))
+        );
+
+        nameof(SimpleHeader).ReplacePlaceholders(documentModel, _folderConfig);
     }
 
     [Fact]
     public void SimpleFooter()
     {
-        this.Process(nameof(SimpleFooter), new SimpleModel("xyz", "The real value of XYZ"));
+        ObjectModel documentModel = ObjectModel.Create(
+            ("xyz", new ValueModel("The real value of XYZ"))
+        );
+
+        nameof(SimpleFooter).ReplacePlaceholders(documentModel, _folderConfig);
     }
 }

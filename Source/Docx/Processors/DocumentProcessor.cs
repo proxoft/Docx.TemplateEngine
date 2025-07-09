@@ -6,28 +6,33 @@ using Proxoft.TemplateEngine.Docx.Processors.Images;
 
 namespace Proxoft.TemplateEngine.Docx.Processors;
 
-internal class DocumentProcessor(EngineConfig engineConfig, ILogger logger)
+internal class DocumentProcessor(EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
 {
-    private readonly EngineConfig _engineConfig = engineConfig;
-
-    public ILogger Logger { get; } = logger;
-
-    public void Process(WordprocessingDocument document, Model documentModel)
+    public void Process(WordprocessingDocument document, ObjectModel documentModel)
     {
-        var mainPart = document.MainDocumentPart;
-        var imageProcessor = new ImageProcessor(mainPart, this.Logger);
-        var compositeElementProcessor = new CompositeElementProcessor(_engineConfig, imageProcessor, this.Logger);
+        MainDocumentPart? mainPart = document.MainDocumentPart;
+        if(mainPart?.Document?.Body is null)
+        {
+            this.Logger.LogError("MainDocumentPart or underlying Body is null. Cannot process the document.");
+            return;
+        }
 
-        compositeElementProcessor.Process(mainPart.Document.Body, documentModel);
+        CompositeElementProcessor processor = new(
+            new ImageProcessor(mainPart, this.EngineConfig, this.Logger),
+            this.EngineConfig,
+            this.Logger
+        );
+
+        processor.Process(mainPart.Document.Body, documentModel);
 
         foreach (var hp in mainPart.HeaderParts)
         {
-            compositeElementProcessor.Process(hp.Header, documentModel);
+            processor.Process(hp.Header, documentModel);
         }
 
         foreach (var fp in mainPart.FooterParts)
         {
-            compositeElementProcessor.Process(fp.Footer, documentModel);
+            processor.Process(fp.Footer, documentModel);
         }
     }
 }

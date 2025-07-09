@@ -8,10 +8,22 @@ using Proxoft.TemplateEngine.Docx.Processors.Tables;
 
 namespace Proxoft.TemplateEngine.Docx.Processors;
 
-internal class CompositeElementProcessor(EngineConfig engineConfig, IImageProcessor imageProcessor, ILogger logger)
+internal class CompositeElementProcessor(
+    ImageProcessor imageProcessor,
+    EngineConfig engineConfig,
+    ILogger logger) : Processor(engineConfig, logger)
 {
-    private ParagraphsProcessor _paragraphsProcessor = new ParagraphsProcessor(engineConfig, imageProcessor, logger);
-    private TablesProcessor _tablesProcessor = new TablesProcessor(engineConfig, imageProcessor, logger);
+    ParagraphsProcessor _paragraphsProcessor = new(
+            imageProcessor,
+            engineConfig,
+            logger
+        );
+
+    TablesProcessor _tablesProcessor = new(
+            imageProcessor,
+            engineConfig,
+            logger
+        );
 
     public void Process(OpenXmlCompositeElement compositeElement, Model context)
     {

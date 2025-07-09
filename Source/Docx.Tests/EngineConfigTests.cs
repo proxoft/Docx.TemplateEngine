@@ -3,20 +3,23 @@ using Proxoft.TemplateEngine.Docx.DataModel;
 
 namespace Proxoft.TemplateEngine.Docx.Tests;
 
-public class EngineConfigTests : TestBase
+public class EngineConfigTests
 {
-    public EngineConfigTests() : base("EngineConfig")
-    {
-    }
+    private readonly FolderConfig _folderConfig = FolderConfig.Default.Subfolder("EngineConfig");
 
     [Fact]
     public void DoubleQuote()
     {
-        var config = new EngineConfig(
+        EngineConfig config = new(
             new PlaceholderConfig("{{", "}}", ".", ":"),
             ArrayConfig.Default,
-            ConditionConfig.Default);
+            ConditionConfig.Default,
+            "$");
 
-        this.Process(nameof(DoubleQuote), new SimpleModel("xyz", "The real value of XYZ"), config);
+        ObjectModel root = ObjectModel.Create(
+            ("xyz", new ValueModel("The real value of XYZ"))
+        );
+
+        nameof(DoubleQuote).ReplacePlaceholders(root, config, _folderConfig);
     }
 }

@@ -11,25 +11,13 @@ using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Tables;
 
-internal class TablesProcessor
+internal sealed class TablesProcessor(ImageProcessor imageProcessor, EngineConfig engineConfig, ILogger logger) : Processor(engineConfig, logger)
 {
-    private readonly EngineConfig _engineConfig;
-    private readonly IImageProcessor _imageProcessor;
-    private readonly ILogger _logger;
-
-    public TablesProcessor(EngineConfig engineConfig, IImageProcessor imageProcessor, ILogger logger)
-    {
-        _engineConfig = engineConfig;
-        _imageProcessor = imageProcessor;
-        _logger = logger;
-    }
+    private readonly ImageProcessor _imageProcessor = imageProcessor;
 
     public void Process(OpenXmlCompositeElement parent, Model context)
     {
-        var tables = parent
-            .Childs<Table>();
-
-        foreach(var table in tables)
+        foreach (var table in parent.Childs<Table>())
         {
             this.Process(table, context);
         }
@@ -41,7 +29,7 @@ internal class TablesProcessor
         var lastProcessedTableRow = -1;
         do
         {
-            template = table.FindNextTemplate(_engineConfig);
+            template = table.FindNextTemplate(this.EngineConfig);
             switch (template)
             {
                 case ArrayTemplate at:
@@ -61,17 +49,48 @@ internal class TablesProcessor
             context);
     }
 
+    private void ProcessRowsBetweenIndeces(
+        Table table,
+        int firstIndex,
+        int lastIndex,
+        Model context)
+    {
+        if (lastIndex == -1)
+        {
+            return;
+        }
+
+        var skipCount = firstIndex < 0 ? 0 : firstIndex;
+        var takeCount = lastIndex == firstIndex
+            ? 1
+            : lastIndex - firstIndex;
+
+        foreach (var row in table.Rows().Skip(skipCount).Take(takeCount))
+        {
+            this.ProcessCellsOfRow(row, context);
+        }
+    }
+
+    private void ProcessCellsOfRow(TableRow row, Model context)
+    {
+        CompositeElementProcessor compositeProcessor = new(_imageProcessor, this.EngineConfig, this.Logger);
+        foreach (var cell in row.Cells())
+        {
+            compositeProcessor.Process(cell, context);
+        }
+    }
+
     private int ProcessTemplate(ArrayTemplate template, Table table, Model context)
     {
-        if (!(context.Find(template.Start.ModelDescription.Expression) is CollectionModel collection))
+        if (context.Find(template.Start.ModelDescription.Expression, this.EngineConfig.ThisCharacter) is not CollectionModel collection)
         {
             return template.End.Position.RowIndex + 1;
         }
 
         var resultRows = new List<TableRow>();
-        foreach(var item in collection.Items)
+        foreach (var item in collection.Items)
         {
-            foreach(var row in template.OpenXml.Elements.Select(e => e.CloneNode(true)).Cast<TableRow>())
+            foreach (var row in template.OpenXml.Elements.Select(e => e.CloneNode(true)).Cast<TableRow>())
             {
                 this.ProcessCellsOfRow(row, item);
                 resultRows.Add(row);
@@ -90,37 +109,5 @@ internal class TablesProcessor
         originalRows.RemoveSelfFromParent();
 
         return template.Start.Position.RowIndex + resultRows.Count;
-    }
-
-    private void ProcessRowsBetweenIndeces(
-        Table table,
-        int firstIndex,
-        int lastIndex,
-        Model context)
-    {
-        if(lastIndex == -1)
-        {
-            return;
-        }
-
-        var skipCount = firstIndex < 0 ? 0 : firstIndex;
-        var takeCount = lastIndex == firstIndex
-            ? 1
-            : lastIndex - firstIndex;
-
-        foreach (var row in table.Rows().Skip(skipCount).Take(takeCount))
-        {
-            this.ProcessCellsOfRow(row, context);
-        }
-    }
-
-    private void ProcessCellsOfRow(TableRow row, Model context)
-    {
-        var compositeElementProcessor = new CompositeElementProcessor(_engineConfig, _imageProcessor, _logger);
-
-        foreach (var cell in row.Cells())
-        {
-            compositeElementProcessor.Process(cell, context);
-        }
     }
 }

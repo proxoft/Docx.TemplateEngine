@@ -31,7 +31,7 @@ internal static class ImageParametersParser
         return v;
     }
 
-    private static long? TryGetEmu(this string parameter)
+    private static long? TryGetEmu(this string? parameter)
     {
         if (string.IsNullOrWhiteSpace(parameter))
         {

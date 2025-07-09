@@ -1,4 +1,6 @@
-﻿namespace Proxoft.TemplateEngine.Docx.Processors.Searching;
+﻿using System.Diagnostics;
+
+namespace Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 internal abstract class Template
 {

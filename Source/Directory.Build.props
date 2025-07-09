@@ -26,4 +26,8 @@
 
         <Version>0.1.0</Version>
     </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Proxoft.TemplateEngine.$(MSBuildProjectName).Tests" />
+    </ItemGroup>
 </Project>

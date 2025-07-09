@@ -2,35 +2,18 @@
 
 namespace Proxoft.TemplateEngine.Docx.DataModel;
 
-public class ConditionModel(string name, Func<bool> conditionFunc) : Model(name)
+public sealed class ConditionModel(Func<bool> statement) : ValueModelBase
 {
-    private readonly Func<bool> _conditionFunc = conditionFunc;
+    private readonly Func<bool> _statement = statement;
 
-    public ConditionModel(string name, bool value) : this(name, () => value)
+    public ConditionModel(bool value) : this(() => value)
     {
     }
 
-    public bool IsTrue() => _conditionFunc();
+    public bool Evaluate() => _statement();
 
-    public bool IsFullfilled(string parameter)
-    {
-        return string.IsNullOrWhiteSpace(parameter) || parameter.ToLower() != "false"
-            ? this.IsTrue()
-            : !this.IsTrue();
-    }
-
-    public override string FormattedValue()
-    {
-        return _conditionFunc().ToString().ToLower();
-    }
-
-    internal override Model Find(ModelExpression expression)
-    {
-        if (expression.IsFinal && expression.Name == this.Name)
-        {
-            return this;
-        }
-
-        return this.Parent.Find(expression);
-    }
+    public bool Evaluate(string parameter) =>
+        string.IsNullOrWhiteSpace(parameter) || parameter.ToLower() != "false"
+            ? _statement()
+            : !_statement();
 }

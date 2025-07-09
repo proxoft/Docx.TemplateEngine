@@ -8,19 +8,17 @@ using Proxoft.TemplateEngine.Docx.Processors;
 
 namespace Proxoft.TemplateEngine.Docx;
 
-public class DocumentEngine(EngineConfig engineConfig)
+public class DocumentEngine(ILogger<DocumentEngine> logger)
 {
-    private readonly EngineConfig _engineConfig = engineConfig;
+    private readonly ILogger<DocumentEngine> _logger = logger;
 
-    public DocumentEngine() : this(EngineConfig.Default)
+    public DocumentEngine() : this(NullLogger<DocumentEngine>.Instance)
     {
     }
 
-    public ILogger Logger { get; set; } = NullLogger.Instance;
-
-    public byte[] Run(Stream docxTemplate, Model model, EngineConfig engineConfig)
+    public byte[] Run(Stream docxTemplate, ObjectModel model, EngineConfig engineConfig)
     {
-        DocumentProcessor processor = new(engineConfig, this.Logger);
+        DocumentProcessor processor = new(engineConfig, _logger);
 
         using var ms = new MemoryStream();
         docxTemplate.CopyTo(ms);
@@ -32,13 +30,16 @@ public class DocumentEngine(EngineConfig engineConfig)
 
         return ms.ToArray();
     }
+}
 
-    public byte[] Run(Stream docxTemplate, Model model)
-        => this.Run(docxTemplate, model, _engineConfig);
+public static class DocumentEngineExtensions
+{
+    public static byte[] Run(this DocumentEngine engine, byte[] docxTemplate, ObjectModel model, EngineConfig engineConfig)
+    {
+        using var stream = new MemoryStream(docxTemplate);
+        return engine.Run(stream, model, engineConfig);
+    }
 
-    public byte[] Run(byte[] docxTemplate, Model model)
-        => this.Run(docxTemplate, model, EngineConfig.Default);
-
-    public byte[] Run(byte[] docxTemplate, Model model, EngineConfig engineConfig)
-        => this.Run(new MemoryStream(docxTemplate), model, engineConfig);
+    public static byte[] Run(this DocumentEngine engine, byte[] docxTemplate, ObjectModel model) =>
+        engine.Run(docxTemplate, model, EngineConfig.Default);
 }

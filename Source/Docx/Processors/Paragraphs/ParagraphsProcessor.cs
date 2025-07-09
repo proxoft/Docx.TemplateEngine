@@ -10,18 +10,12 @@ using Proxoft.TemplateEngine.Docx.Processors.Searching;
 
 namespace Proxoft.TemplateEngine.Docx.Processors.Paragraphs;
 
-internal class ParagraphsProcessor
+internal class ParagraphsProcessor(
+    ImageProcessor imageProcessor,
+    EngineConfig engineConfig,
+    ILogger logger) : Processor(engineConfig, logger)
 {
-    private readonly EngineConfig _engineConfig;
-    private readonly IImageProcessor _imageProcessor;
-    private readonly ILogger _logger;
-
-    public ParagraphsProcessor(EngineConfig engineConfig, IImageProcessor imageProcessor, ILogger logger)
-    {
-        _engineConfig = engineConfig;
-        _imageProcessor = imageProcessor;
-        _logger = logger;
-    }
+    private readonly ImageProcessor _imageProcessor = imageProcessor;
 
     public void Process(OpenXmlCompositeElement parent, Model context)
     {
@@ -29,95 +23,107 @@ internal class ParagraphsProcessor
         int startTextIndex = 0;
         do
         {
-            var paragraphs = parent
-                .ChildElements
-                .OfType<Paragraph>()
-                .ToArray();
+            Paragraph[] paragraphs = [
+                ..parent
+                    .ChildElements
+                    .OfType<Paragraph>()
+            ];
 
-            template = paragraphs.FindNextTemplate(startTextIndex, _engineConfig);
+            template = paragraphs.FindNextTemplate(startTextIndex, this.EngineConfig);
 
             switch (template)
             {
-                case SingleValueTemplate svt:
-                    {
-                        var endOfText = this.ProcessTemplate(svt, paragraphs, context);
-
-                        paragraphs = paragraphs
-                            .Skip(svt.Token.Position.ParagraphIndex)
-                            .ToArray();
-
-                        startTextIndex = endOfText;
-                    }
+                case ValueTemplate svt:
+                    int endOfText = svt.Process(paragraphs, context, _imageProcessor, this.EngineConfig);
+                    startTextIndex = endOfText;
                     break;
 
                 case ArrayTemplate at:
                     {
-                        var (lastParagraph, textEnd) = this.ProcessTemplate(at, paragraphs, context);
-                        paragraphs = parent
-                            .ChildElements
-                            .OfType<Paragraph>()
-                            .SkipWhile(p => p != lastParagraph)
-                            .ToArray();
-                        
-                        startTextIndex = textEnd;
+                        (Paragraph? lastParagraph, int continueTextEnd) = at.ProcessArrayTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
+                        if(lastParagraph is null)
+                        {
+                            paragraphs = [.. paragraphs.Skip(at.End.Position.ParagraphIndex + 1)];
+                            startTextIndex = 0;
+                        }
+                        else
+                        {
+                            paragraphs = [
+                                ..parent
+                                    .ChildElements
+                                    .OfType<Paragraph>()
+                                    .SkipWhile(p => p != lastParagraph)
+                            ];
+                            startTextIndex = continueTextEnd;
+                        }
                     }
                     break;
                 case ConditionTemplate ct:
                     {
-                        var (lastParagraph, textEnd) = this.ProcessTemplate(ct, paragraphs, context);
-                        startTextIndex = textEnd;
+                        (Paragraph lastParagraph, int continueTextEnd) = ct.ProcessConditionTemplate(context, paragraphs, _imageProcessor, this.EngineConfig, this.Logger);
+                        startTextIndex = continueTextEnd;
                     }
                     break;
             }
         } while (template != Template.Empty);
     }
+}
 
-    private int ProcessTemplate(SingleValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context)
+file static class TempalteOperations
+{
+    public static int Process(this ValueTemplate template, IReadOnlyCollection<Paragraph> bodyParagraphs, Model context, ImageProcessor imageProcessor, EngineConfig engineConfig)
     {
-        var p = bodyParagraphs.ElementAt(template.Token.Position.ParagraphIndex);
-        var model = context.Find(template.Token.ModelDescription.Expression);
-
-        var textEndIndex = p.ReplaceToken(template.Token, model, _imageProcessor);
+        Paragraph p = bodyParagraphs.ElementAt(template.Token.Position.ParagraphIndex);
+        Model model = context.Find(template.Token.ModelDescription.Expression, engineConfig.ThisCharacter);
+        int textEndIndex = p.ReplaceToken(template.Token, model, imageProcessor);
         return textEndIndex;
     }
 
-    private (Paragraph, int) ProcessTemplate(
-        ArrayTemplate template,
+    public static (Paragraph?, int) ProcessArrayTemplate(
+        this ArrayTemplate template,
+        Model context,
         IReadOnlyCollection<Paragraph> bodyParagraphs,
-        Model context)
+        ImageProcessor imageProcessor,
+        EngineConfig engineConfig,
+        ILogger logger)
     {
-        if (!(context.Find(template.Start.ModelDescription.Expression) is CollectionModel collection))
+        Model model = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter);
+        if(model is not CollectionModel collection)
         {
+            logger.LogError("Array template for non collection model: {modelName}", template.Start.ModelDescription.Expression);
             return (null, 0);
         }
 
-        var startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
-        var endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
-
-        if (startParagraph != endParagraph)
-        {
-            var s = startParagraph.NextSibling();
-            while(s != endParagraph)
-            {
-                var t = s;
-                s = t.NextSibling();
-                t.Remove();
-            }
-        }
-
-        var result = new List<OpenXmlElement>();
-        var compositeElementProcessor = new CompositeElementProcessor(_engineConfig, _imageProcessor, _logger);
+        CompositeElementProcessor compositeElementProcessor = new (imageProcessor, engineConfig, logger);
+        OpenXmlElement[] result = [];
 
         foreach (var item in collection.Items)
         {
-            var itemBody = template.OpenXml.CreateBody();
+            Body itemBody = template.OpenXml.CreateBody();
             compositeElementProcessor.Process(itemBody, item);
 
-            result.AddRange(itemBody.ChildElements.Select(e => e.CloneNode(true)));
+            result = [
+                ..result,
+                ..itemBody.ChildElements.Select(e => e.CloneNode(true))
+            ];
         }
 
-        startParagraph.ReplaceToken(template.Start, Model.Empty, _imageProcessor);
-        var textEnd = endParagraph.ReplaceToken(template.End, Model.Empty, _imageProcessor);
+        Paragraph startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
+        Paragraph endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
+
+        if (startParagraph != endParagraph)
+        {
+            OpenXmlElement? s = startParagraph.NextSibling();
+            while (s != endParagraph)
+            {
+                OpenXmlElement? t = s;
+                s = t?.NextSibling();
+                t?.Remove();
+            }
+        }
+
+        startParagraph.ReplaceToken(template.Start, EmptyModel.Instance, imageProcessor);
+        int textEnd = endParagraph.ReplaceToken(template.End, EmptyModel.Instance, imageProcessor);
 
         foreach (var e in result)
         {
@@ -127,27 +133,32 @@ internal class ParagraphsProcessor
         return (endParagraph, textEnd);
     }
 
-    private (Paragraph, int) ProcessTemplate(
-        ConditionTemplate template,
+    public static (Paragraph, int) ProcessConditionTemplate(
+        this ConditionTemplate template,
+        Model context,
         ICollection<Paragraph> bodyParagraphs,
-        Model context)
+        ImageProcessor imageProcessor,
+        EngineConfig engineConfig,
+        ILogger logger)
     {
-        if (!(context.Find(template.Start.ModelDescription.Expression) is ConditionModel conditionModel))
+        ConditionModel? conditionModel = context.Find(template.Start.ModelDescription.Expression, engineConfig.ThisCharacter) as ConditionModel;
+        if (conditionModel is null)
         {
-            return (bodyParagraphs.ElementAt(template.End.Position.RowIndex), template.End.Position.TextIndex);
+            logger.LogError("ConditionModel is missing or Condition template found for non condition model: {modelName}", template.Start.ModelDescription.Expression);
         }
 
-        var startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
-        startParagraph.ReplaceToken(template.Start, Model.Empty, _imageProcessor);
+        Paragraph startParagraph = bodyParagraphs.ElementAt(template.Start.Position.ParagraphIndex);
+        int _ = startParagraph.ReplaceToken(template.Start, EmptyModel.Instance, imageProcessor);
 
-        var endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
-        var textEnd = endParagraph.ReplaceToken(template.End, Model.Empty, _imageProcessor);
+        Paragraph endParagraph = bodyParagraphs.ElementAt(template.End.Position.ParagraphIndex);
+        int textEnd = template.Start.Position.TextIndex;
 
-        if (!conditionModel.IsFullfilled(template.Start.ModelDescription.Parameters))
+        bool suttisfied = conditionModel?.Evaluate(template.Start.ModelDescription.Parameters) ?? false;
+        if (!suttisfied)
         {
             bodyParagraphs.RemoveTextAndElementsBetween(template.Start.Position, template.End.Position);
         }
 
-        return (endParagraph, textEnd);
+        return(endParagraph, textEnd);
     }
 }
